@@ -1,6 +1,9 @@
 # Datasets
 Datasets
 
+# MacOS specific
+.DS_Store
+
 # Prerequisites
 *.d
 
