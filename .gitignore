@@ -4,6 +4,9 @@ Datasets
 # MacOS specific
 .DS_Store
 
+# VS Code
+.vscode
+
 # Prerequisites
 *.d
 
