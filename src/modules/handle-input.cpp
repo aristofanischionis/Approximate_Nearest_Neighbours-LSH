@@ -133,5 +133,6 @@ void handleInput(int argc, char **argv){
 			cout << "You need to provide the query_file path" << endl;
 			continue;
 		}
+		readFile(input_file, INPUT_FILE);
 	}
 }
