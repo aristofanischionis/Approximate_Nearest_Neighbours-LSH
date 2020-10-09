@@ -49,11 +49,11 @@ void handleInput(int argc, char **argv){
 		getline(cin, input);
 		if (input.size() == 0) exit(0);
 
-		// Initialize default values
-		int k = 4;
-		int l = 5;
-		int n = 1;
-		double r = 1.0;
+		// Update values
+		k = 4;
+		l = 5;
+		n = 1;
+		r = 1.0;
 
 		// clear the strings
 		output_file.clear();
