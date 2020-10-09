@@ -3,6 +3,7 @@
 // given points 
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 using namespace std; 
 
 // Return the sum of distance of one axis. 
