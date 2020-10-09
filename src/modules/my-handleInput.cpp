@@ -55,7 +55,9 @@ void handleInput(int argc, char **argv){
 		char split_char = ' ';
 		getline(cin, input);
 		if (input.size() == 0) exit(0);
-		if (input.size() < 7){
+		// Here the least amount of arguments are 6
+		// We don't pass the executable name as parameter
+		if (input.size() < 6){
 			cout << "You need to provide the path of the files" << endl;
 			continue;
 		}
