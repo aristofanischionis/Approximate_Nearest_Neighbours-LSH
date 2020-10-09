@@ -1,6 +1,6 @@
 #include <iostream>
 #include "headers/distances.hpp"
-#include "headers/handle-Input.hpp"
+#include "headers/handle-input.hpp"
 using namespace std; 
 
 int main(int argc, char **argv) {
