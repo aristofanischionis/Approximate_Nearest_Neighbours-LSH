@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include "../headers/handle-input.hpp"
 
 using namespace std;
 
@@ -37,7 +38,7 @@ void handleInput(int argc, char **argv){
 
 	for (int i = 5; i < argc; i++){
 		param = argv[i];
-		if (param == "-k") k = atoi(argv[i+1]);
+		if (param == "-k") k = atoi(argv[i+1]); // we don't check what it n argv i + 1
 		else if (param == "-L") l = atoi(argv[i+1]);
 		else if (param == "-N") n = atoi(argv[i+1]);
 		else if (param == "-R") r = atof(argv[i+1]);
@@ -48,7 +49,10 @@ void handleInput(int argc, char **argv){
 		cout << "You need to provide the output_file path" << endl;
 		exit(0);
 	}
+	//Here we call a function to do the work for input_file
+	readFile(input_file, INPUT_FILE);
 
+	// Here we start the loop after the first execution of the program
 	while (true){
 		cout << "Please enter new parameters for the program to re-execute or press enter to exit" << endl;
 		string input;
@@ -129,7 +133,5 @@ void handleInput(int argc, char **argv){
 			cout << "You need to provide the query_file path" << endl;
 			continue;
 		}
-
-		//Here we call a function to do the work for input_file
 	}
 }
