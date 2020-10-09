@@ -2,29 +2,36 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <cstring>
 
 using namespace std;
 
 void handleInput(int argc, char **argv){
+
+	// First we need to check for the least amount of arguments required
+	// Which are 7 since we need 3 files with their param and the executable
+	if (argc < 7){
+		cout << "You need to provide the path of the files" << endl;
+		exit(0);
+	}	
 
 	// Initialize default values
 	int k = 4;
 	int l = 5;
 	int n = 1;
 	double r = 1.0;
-	string input_file, output_file, query_file, param = argv[1];
+	string input_file, output_file, query_file;
+	string param = argv[1];
 	// get the path files
 	if (param != "-d"){
 		cout << "You need to provide the input_file path" << endl;
-		// continue;
+		exit(0);
 	}
 	input_file = argv[2];
 
  	param = argv[3];
 	if (param != "-q"){
 		cout << "You need to provide the query_file path" << endl;
-		// continue;
+		exit(0);
 	}
 	query_file = argv[4];
 
@@ -42,12 +49,16 @@ void handleInput(int argc, char **argv){
 		exit(0);
 	}
 
-	while(true){
+	while (true){
 		cout << "Please enter new parameters for the program to re-execute or press enter to exit" << endl;
 		string input;
 		char split_char = ' ';
 		getline(cin, input);
 		if (input.size() == 0) exit(0);
+		if (input.size() < 7){
+			cout << "You need to provide the path of the files" << endl;
+			continue;
+		}
 
 		// Update values
 		k = 4;
@@ -65,8 +76,8 @@ void handleInput(int argc, char **argv){
 	    stringstream token(input); 
 	    
 	    // tokenize the input and store the values
-		while(getline(token, param, split_char)){
-	        if (param == "-k"){
+		while (getline(token, param, split_char)){
+			if (param == "-k"){
 	        	getline(token, param, split_char);
 
 	    		stringstream intValue(param);
@@ -106,15 +117,15 @@ void handleInput(int argc, char **argv){
 	    // Check if the files are provided
 	    if (input_file.empty()){
 			cout << "You need to provide the input_file path" << endl;
-			exit(0);
+			continue;
 		}
 		if (output_file.empty()){
 			cout << "You need to provide the output_file path" << endl;
-			exit(0);
+			continue;
 		}
 		if (query_file.empty()){
 			cout << "You need to provide the query_file path" << endl;
-			exit(0);
+			continue;
 		}
 
 		//Here we call a function to do the work for input_file
