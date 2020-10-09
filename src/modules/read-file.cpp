@@ -34,14 +34,30 @@ void getMeta(
 // the vector stores 'unsigned char', because it's the most efficient
 // unsigned char is a number between 0-255
 // alternatively we could use uint8_t (but needs include of a library)
-int readImage() {
-    return 0;
+// BE CAREFUL WE PROBABLY NEED TO DO SOMETHING WITH THIS 28*28 
+// I'M NOT SURE HOW WE ARE SUPPOSED TO CREATE THE IMAGE pff
+vector<unsigned char> readImage(ifstream *file) {
+    vector<unsigned char> image;
+    unsigned char byte;
+    int i = 0;
+    // read one-by-one 784 (28*28) unsigned bytes
+    for (i = 0; i < 784; i++){
+        (*file).read(reinterpret_cast<char*>(&byte), 1);
+        // with the following cout we see that most of the bytes have the value of 0
+        // but some of them have values like 15, 235, 204, 124, etc
+        // cout << "byte is: " << static_cast<unsigned>(byte) << endl;
+        image.push_back(byte);
+    }
+    return image;
 }
 
 // handling the input file
 void readFile(const std::string& filename, int file_type) {
     // Checked and I receive the filename string properly
     ifstream file;
+    // an array of vectors 
+    vector<unsigned char>* all_images;
+    uint32_t i = 0;
     uint32_t magic_number = 0;
     uint32_t number_of_images = 0;
     uint32_t number_of_rows = 0;
@@ -62,8 +78,12 @@ void readFile(const std::string& filename, int file_type) {
                 cout << "number_of_images is: " << number_of_images << endl;
                 cout << "number_of_rows is: " << number_of_rows << endl;
                 cout << "number_of_columns is: " << number_of_columns << endl;
+                // initialize an array of vector items (all_images)
+                all_images = new vector<unsigned char>[number_of_images];
                 // loop over all images to read them
-
+                for (i = 0; i < number_of_images; i++){
+                    all_images[i] = readImage(&file);
+                }
                 break;
             case QUERY_FILE:
                 break;
@@ -72,6 +92,11 @@ void readFile(const std::string& filename, int file_type) {
                 break;
         }
         file.close();
+        // free-up memory space
+        for (i = 0; i < number_of_images; i++){
+            all_images[i].clear();
+        }
+        delete[] all_images;
     }
     else cout << "Unable to open file" << endl;
   return;
