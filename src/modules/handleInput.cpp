@@ -38,7 +38,7 @@ void handleInput(int argc, char **argv){
 	}
 
 	if (output_file.empty()){
-		cout << "You need to provide the output path" << endl;
+		cout << "You need to provide the output_file path" << endl;
 		exit(0);
 	}
 
@@ -103,5 +103,20 @@ void handleInput(int argc, char **argv){
  				query_file = param;
 	        }
 	    }
+	    // Check if the files are provided
+	    if (input_file.empty()){
+			cout << "You need to provide the input_file path" << endl;
+			exit(0);
+		}
+		if (output_file.empty()){
+			cout << "You need to provide the output_file path" << endl;
+			exit(0);
+		}
+		if (query_file.empty()){
+			cout << "You need to provide the query_file path" << endl;
+			exit(0);
+		}
+
+		//Here we call a function to do the work for input_file
 	}
 }
