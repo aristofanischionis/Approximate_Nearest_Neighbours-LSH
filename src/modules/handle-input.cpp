@@ -7,12 +7,11 @@
 using namespace std;
 
 void handleInput(int argc, char **argv){
-
 	// First we need to check for the least amount of arguments required
 	// Which are 7 since we need 3 files with their param and the executable
 	if (argc < 7){
 		cout << "You need to provide the path of the files" << endl;
-		exit(0);
+		exit(ERROR);
 	}	
 
 	// Initialize default values
@@ -25,29 +24,30 @@ void handleInput(int argc, char **argv){
 	// get the path files
 	if (param != "-d"){
 		cout << "You need to provide the input_file path" << endl;
-		exit(0);
+		exit(ERROR);
 	}
 	input_file = argv[2];
 
  	param = argv[3];
 	if (param != "-q"){
 		cout << "You need to provide the query_file path" << endl;
-		exit(0);
+		exit(ERROR);
 	}
 	query_file = argv[4];
 
 	for (int i = 5; i < argc; i++){
 		param = argv[i];
-		if (param == "-k") k = atoi(argv[i+1]); // we don't check what it n argv i + 1
-		else if (param == "-L") l = atoi(argv[i+1]);
-		else if (param == "-N") n = atoi(argv[i+1]);
-		else if (param == "-R") r = atof(argv[i+1]);
-		else if (param == "-o") output_file = argv[i+1];
+		if (!argv[i+1]) exit(ERROR);
+		if (param == "-k") k = atoi(argv[++i]);
+		else if (param == "-L") l = atoi(argv[++i]);
+		else if (param == "-N") n = atoi(argv[++i]);
+		else if (param == "-R") r = atof(argv[++i]);
+		else if (param == "-o") output_file = argv[++i];
 	}
 
 	if (output_file.empty()){
 		cout << "You need to provide the output_file path" << endl;
-		exit(0);
+		exit(ERROR);
 	}
 	//Here we call a function to do the work for input_file
 	readFile(input_file, INPUT_FILE);
@@ -58,7 +58,7 @@ void handleInput(int argc, char **argv){
 		string input;
 		char split_char = ' ';
 		getline(cin, input);
-		if (input.size() == 0) exit(0);
+		if (input.size() == 0) exit(SUCCESS);
 		// Here the least amount of arguments are 6
 		// We don't pass the executable name as parameter
 		if (input.size() < 6){
@@ -66,7 +66,7 @@ void handleInput(int argc, char **argv){
 			continue;
 		}
 
-		// Update values
+		// Update default values
 		k = 4;
 		l = 5;
 		n = 1;
@@ -80,30 +80,25 @@ void handleInput(int argc, char **argv){
 
 		// stringstream class token
 	    stringstream token(input); 
-	    
 	    // tokenize the input and store the values
 		while (getline(token, param, split_char)){
 			if (param == "-k"){
 	        	getline(token, param, split_char);
-
 	    		stringstream intValue(param);
 	        	intValue >> k;
 	        }
 			else if (param == "-L"){
 	        	getline(token, param, split_char);
-
 	    		stringstream intValue(param);
 	        	intValue >> l;
 	        }
 			else if (param == "-N"){
 	        	getline(token, param, split_char);
-
 	    		stringstream intValue(param);
 	        	intValue >> n;
 	        }
 			else if (param == "-R"){
 	        	getline(token, param, split_char);
-
 	    		stringstream intValue(param);
 	        	intValue >> r;
 	        }
@@ -119,8 +114,8 @@ void handleInput(int argc, char **argv){
 	        	getline(token, param, split_char);
  				query_file = param;
 	        }
-	    }
-	    // Check if the files are provided
+		}
+		// Check if the files are provided
 	    if (input_file.empty()){
 			cout << "You need to provide the input_file path" << endl;
 			continue;
