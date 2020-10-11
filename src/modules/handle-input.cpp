@@ -3,8 +3,10 @@
 #include <sstream>
 #include <string>
 #include "../headers/handle-input.hpp"
-
+#include "../headers/manhattan-hashing.hpp"
 using namespace std;
+
+int w;
 
 void handleInput(int argc, char **argv){
 	// First we need to check for the least amount of arguments required
@@ -50,6 +52,7 @@ void handleInput(int argc, char **argv){
 		exit(ERROR);
 	}
 	//Here we call a function to do the work for input_file
+	w = 10 * static_cast<int>(r);
 	readFile(input_file, INPUT_FILE);
 
 	// Here we start the loop after the first execution of the program
@@ -128,6 +131,7 @@ void handleInput(int argc, char **argv){
 			cout << "You need to provide the query_file path" << endl;
 			continue;
 		}
+		w = 10 * static_cast<int>(r);
 		readFile(input_file, INPUT_FILE);
 	}
 }

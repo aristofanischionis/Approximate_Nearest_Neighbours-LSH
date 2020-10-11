@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../headers/handle-input.hpp"
+#include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
 // read the first lines of the file, that contain the metadata
@@ -36,19 +37,25 @@ void getMeta(
 // alternatively we could use uint8_t (but needs include of a library)
 // BE CAREFUL WE PROBABLY NEED TO DO SOMETHING WITH THIS 28*28 
 // I'M NOT SURE HOW WE ARE SUPPOSED TO CREATE THE IMAGE pff
-unsigned char* readImage(ifstream *file, uint64_t size) {
-    unsigned char* image = new unsigned char[size];
-
+void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     unsigned char byte;
     // read one-by-one 784 (28*28) unsigned bytes
-    for (uint64_t i = 0; i < size; i++){
+    for (uint64_t i = 0; i < d; i++){
         (*file).read(reinterpret_cast<char*>(&byte), 1);
         // with the following cout we see that most of the bytes have the value of 0
         // but some of them have values like 15, 235, 204, 124, etc
         // cout << "byte is: " << static_cast<unsigned>(byte) << endl;
         image[i] = byte;
     }
-    return image;
+}
+
+void proccessEveryImage(uint64_t d, unsigned char* x_i_array) {
+    float *s_i;
+    int *a_i;
+    // calculate s_i components
+    s_i = calculateURDComponents(d);
+    // calculate a_i components
+    a_i = calculateA_IComponents(x_i_array, s_i, d);  
 }
 
 // handling the input file
@@ -71,25 +78,31 @@ void readFile(const std::string& filename, int file_type) {
                 uint32_t number_of_images = 0;
                 uint32_t number_of_rows = 0;
                 uint32_t number_of_columns = 0;
-                uint64_t size = 0;
+                uint64_t d = 0;
                 getMeta(&file, magic_number, number_of_images, number_of_rows, number_of_columns);
                 cout << "magic_number is: " << magic_number << endl;
                 cout << "number_of_images is: " << number_of_images << endl;
                 cout << "number_of_rows is: " << number_of_rows << endl;
                 cout << "number_of_columns is: " << number_of_columns << endl;
-                size = number_of_columns * number_of_rows;
+                d = number_of_columns * number_of_rows;
                 // initialize an array of vector items (all_images)
                 all_images = new unsigned char*[number_of_images];
                 // loop over all images to read them
                 for (uint32_t i = 0; i < number_of_images; i++){
-                    all_images[i] = new unsigned char[size];
-                    all_images[i] = readImage(&file, size);
+                    all_images[i] = new unsigned char[d];
+                    readImage(&file, all_images[i], d);
                 }
+                // For every image
+                // cout << "bla " <<  static_cast<unsigned>(all_images[5][5]) << endl;
+                proccessEveryImage(d, all_images[5]);
+                // for (uint32_t i = 0; i < number_of_images; i++){
+                //     proccessEveryImage(d, all_images[i]);
+                // }
                 // free-up memory space
-                for (uint32_t i = 0; i < number_of_images; i++){
-                    delete[] all_images[i];
-                }
-                delete[] all_images;
+                // for (uint32_t i = 0; i < number_of_images; i++){
+                //     delete[] x_i[i];
+                // }
+                // delete[] x_i;
                 break;
             }
             case QUERY_FILE:
