@@ -69,7 +69,7 @@ unsigned long int calculateH_XComponents(int* a_i, uint64_t d) {
 	for (uint64_t i=0; i<d; i++){
 		// m^x%M
 		ma = exponentiationModulo(m, d-(i+1), M);
-		hx += ma*a_i[i];
+		hx += ma*abs(a_i[i]);
 	}
 	//need to check if hx is correct!
 	hx = customModulo(hx, M);
