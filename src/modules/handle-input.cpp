@@ -7,6 +7,7 @@
 using namespace std;
 
 int w;
+unsigned long M;
 
 void handleInput(int argc, char **argv){
 	// First we need to check for the least amount of arguments required
@@ -53,6 +54,7 @@ void handleInput(int argc, char **argv){
 	}
 	//Here we call a function to do the work for input_file
 	w = static_cast<int>(4*r);
+	M = pow(2, 32/k);
 	readFile(input_file, INPUT_FILE);
 
 	// Here we start the loop after the first execution of the program
@@ -131,7 +133,6 @@ void handleInput(int argc, char **argv){
 			cout << "You need to provide the query_file path" << endl;
 			continue;
 		}
-		w = static_cast<int>(4*r);
 		readFile(input_file, INPUT_FILE);
 	}
 }

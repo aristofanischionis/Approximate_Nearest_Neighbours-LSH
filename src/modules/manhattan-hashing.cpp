@@ -9,7 +9,7 @@ float* calculateURDComponents(uint64_t d){
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, (float) w);
 
-	for(int i=0;i<d;i++){ 	/* Each hash function has its own s */
+	for(uint64_t i=0; i<d; i++){ 	/* Each hash function has its own s */
 		random = distribution(generator); /* Generate a new double number */
 		s[i] = random;
 	}
@@ -23,7 +23,7 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 	int *a_i = new int[d];
 	float* x_i = new float[d];
 
-	for (int i = 0; i < d; i++) {
+	for (uint64_t i=0; i<d; i++) {
 		// transform the unsigned char* to float
 		x_i[i] = static_cast<float>(x_i_array[i]);
 		// do the subtraction of x_i and s_i
@@ -34,4 +34,17 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 		a_i[i] = static_cast<int>(floor(static_cast<double>(div)));
 	}
 	return a_i;
+}
+
+
+int calculateH_XComponents(int* a_i, uint64_t d) {
+	int cm = m;
+	int hx = 0;
+	for (uint64_t i=0; i<d; i++){
+		cm = pow(m, d-(i+1));
+		hx += (cm*a_i[i])%M;
+	}
+	hx %= M;
+	
+	return hx;
 }

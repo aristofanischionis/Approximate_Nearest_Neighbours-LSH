@@ -52,11 +52,15 @@ void readImage(ifstream *file, unsigned char* image, uint64_t d) {
 void proccessEveryImage(uint64_t d, unsigned char* x_i_array) {
     float *s_i;
     int *a_i;
+    int hx;
     // calculate s_i components
     s_i = calculateURDComponents(d);
     // calculate a_i components
     a_i = calculateA_IComponents(x_i_array, s_i, d);
-    
+    // Calculate a single H(x)
+    hx = calculateH_XComponents(a_i, d);
+
+    cout <<hx<<endl;
 }
 
 // handling the input file
