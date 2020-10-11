@@ -52,7 +52,7 @@ void handleInput(int argc, char **argv){
 		exit(ERROR);
 	}
 	//Here we call a function to do the work for input_file
-	w = 10 * static_cast<int>(r);
+	w = static_cast<int>(4*r);
 	readFile(input_file, INPUT_FILE);
 
 	// Here we start the loop after the first execution of the program
@@ -131,7 +131,7 @@ void handleInput(int argc, char **argv){
 			cout << "You need to provide the query_file path" << endl;
 			continue;
 		}
-		w = 10 * static_cast<int>(r);
+		w = static_cast<int>(4*r);
 		readFile(input_file, INPUT_FILE);
 	}
 }

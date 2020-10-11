@@ -55,7 +55,8 @@ void proccessEveryImage(uint64_t d, unsigned char* x_i_array) {
     // calculate s_i components
     s_i = calculateURDComponents(d);
     // calculate a_i components
-    a_i = calculateA_IComponents(x_i_array, s_i, d);  
+    a_i = calculateA_IComponents(x_i_array, s_i, d);
+    
 }
 
 // handling the input file

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <valarray>
 #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
@@ -16,14 +17,21 @@ float* calculateURDComponents(uint64_t d){
 }
 
 int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
-	int* a_i = new int[d];
+	// with this function we will calcuate the a_i components
+	// for an image
+	float sub, div;
+	int *a_i = new int[d];
 	float* x_i = new float[d];
+
 	for (int i = 0; i < d; i++) {
+		// transform the unsigned char* to float
 		x_i[i] = static_cast<float>(x_i_array[i]);
+		// do the subtraction of x_i and s_i
+		sub = x_i[i] - s_i[i];
+		// divide the subtraction with the w, which is globally accessible
+		div = sub / w;
+		// find the floor of the division
+		a_i[i] = static_cast<int>(floor(static_cast<double>(div)));
 	}
-	// this function does x_i - s_i for all the items in the two arrays
-	transform(x_i, x_i + d, s_i, a_i, minus<float>());
-	for (int i= 0; i < d; i++)
-		cout << "a_i: " << abs(a_i[i]) << endl;
 	return a_i;
 }
