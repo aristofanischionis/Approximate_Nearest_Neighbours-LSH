@@ -36,15 +36,41 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 	return a_i;
 }
 
+// Calculate the m^x%M for x = [0,d-1]
+unsigned int exponentiationModulo(unsigned int x, unsigned int y, unsigned long p){
+	int res = 1;     // Initialize result  
+  
+    x = x % p; // Update x if it is more than or  
+                // equal to p 
+   
+    if (x == 0) return 0; // In case x is divisible by p; 
+  
+    while (y > 0) {  
+        // If y is odd, multiply x with result  
+        if (y & 1)  
+            res = (res*x) % p;  
+  
+        // y must be even now  
+        y = y>>1; // y = y/2  
+        x = (x*x) % p;  
+    }  
+    return res;
+}
+
+unsigned long customModulo(unsigned long x, unsigned long y){
+	unsigned long modulo = x%y;
+	return modulo < 0? modulo+y : modulo;
+}
 
 int calculateH_XComponents(int* a_i, uint64_t d) {
-	int cm = m;
-	int hx = 0;
+	unsigned long hx = 0;
+	unsigned int ma = 0;
+
 	for (uint64_t i=0; i<d; i++){
-		cm = pow(m, d-(i+1));
-		hx += (cm*a_i[i])%M;
+		// m^x%M
+		ma = exponentiationModulo(m, d-(i+1), M);
+		hx += ma*a_i[i];
 	}
-	hx %= M;
-	
+	hx = customModulo(hx, M);
 	return hx;
 }
