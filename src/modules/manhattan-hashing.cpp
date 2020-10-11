@@ -58,8 +58,8 @@ unsigned long long int exponentiationModulo(unsigned int x, unsigned int y, unsi
 }
 
 unsigned long customModulo(unsigned long x, unsigned long y){
-	unsigned long modulo = x%y;
-	return modulo < 0? modulo+y : modulo;
+	/* Modulo between x and y, supports negative numers */
+	return (x % y + y) %y;
 }
 
 unsigned long int calculateH_XComponents(int* a_i, uint64_t d) {
