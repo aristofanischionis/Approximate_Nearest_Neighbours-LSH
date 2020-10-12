@@ -1,1 +1,1 @@
-void process(uint32_t, uint64_t);
+void process(uint32_t, uint64_t, int, int, int, double);

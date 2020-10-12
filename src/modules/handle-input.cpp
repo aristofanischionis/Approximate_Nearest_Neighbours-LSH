@@ -12,13 +12,16 @@ unsigned int M;
 
 void handleReExecution (
 	uint32_t *number_of_images, 
-	uint64_t *d
+	uint64_t *d,
+	int *k,
+	int *l,
+	int *n,
+	double *r,
+	string *output_file,
+	string *query_file
 	) {
-	int k = SMALL_K;
-	int l = SMALL_L;
-	int n = SMALL_N;
-	double r = SMALL_R;
-	string input_file, output_file, query_file, param;
+	
+	string input_file, param;
 	cout << "Please enter new parameters for the program to re-execute or press enter to exit" << endl;
 	string input;
 	char split_char = ' ';
@@ -33,12 +36,6 @@ void handleReExecution (
 		exit(ERROR);
 	}
 
-	// clear the strings
-	// output_file.clear();
-	// input_file.clear();
-	// query_file.clear();
-	// param.clear();
-
 	// stringstream class token
 	stringstream token(input);
 	// tokenize the input and store the values
@@ -48,30 +45,30 @@ void handleReExecution (
 		{
 			getline(token, param, split_char);
 			stringstream intValue(param);
-			intValue >> k;
+			intValue >> *k;
 		}
 		else if (param == "-L")
 		{
 			getline(token, param, split_char);
 			stringstream intValue(param);
-			intValue >> l;
+			intValue >> *l;
 		}
 		else if (param == "-N")
 		{
 			getline(token, param, split_char);
 			stringstream intValue(param);
-			intValue >> n;
+			intValue >> *n;
 		}
 		else if (param == "-R")
 		{
 			getline(token, param, split_char);
 			stringstream intValue(param);
-			intValue >> r;
+			intValue >> *r;
 		}
 		else if (param == "-o")
 		{
 			getline(token, param, split_char);
-			output_file = param;
+			*output_file = param;
 		}
 		else if (param == "-d")
 		{
@@ -81,7 +78,7 @@ void handleReExecution (
 		else if (param == "-q")
 		{
 			getline(token, param, split_char);
-			query_file = param;
+			*query_file = param;
 		}
 	}
 	// Check if the files are provided
@@ -90,24 +87,25 @@ void handleReExecution (
 		cout << "You need to provide the input_file path" << endl;
 		exit(ERROR);
 	}
-	if (output_file.empty())
+	if (output_file->empty())
 	{
 		cout << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
-	if (query_file.empty())
+	if (query_file->empty())
 	{
 		cout << "You need to provide the query_file path" << endl;
 		exit(ERROR);
 	}
 
-	if (k < 2)
+	w = static_cast<int>(4 * (*r));
+	if (*k < 2)
 	{
 		cerr << "The number k should be more than 2, from theory, ideally should be 4" << endl;
 		exit(ERROR);
 	}
 	// M as given from theory
-	M = pow(2, 32/k);
+	M = pow(2, 32/(*k));
 	readFile(input_file, INPUT_FILE, number_of_images, d);
 }
 
@@ -115,13 +113,15 @@ void handleInput(
 	int argc, 
 	char **argv, 
 	uint32_t *number_of_images, 
-	uint64_t *d
+	uint64_t *d,
+	int *k,
+	int *l,
+	int *n,
+	double *r,
+	string *output_file,
+	string *query_file
 	){
-	int k = SMALL_K;
-	int l = SMALL_L;
-	int n = SMALL_N;
-	double r = SMALL_R;
-	string input_file, output_file, query_file;
+	string input_file;
 	string param = argv[1];
 	// First we need to check for the least amount of arguments required
 	// Which are 7 since we need 3 files with their param and the executable
@@ -142,29 +142,29 @@ void handleInput(
 		cerr << "You need to provide the query_file path" << endl;
 		exit(ERROR);
 	}
-	query_file = argv[4];
+	*query_file = argv[4];
 
 	for (int i = 5; i < argc; i++){
 		param = argv[i];
 		if (!argv[i+1]) exit(ERROR);
-		if (param == "-k") k = atoi(argv[++i]);
-		else if (param == "-L") l = atoi(argv[++i]);
-		else if (param == "-N") n = atoi(argv[++i]);
-		else if (param == "-R") r = atof(argv[++i]);
-		else if (param == "-o") output_file = argv[++i];
+		if (param == "-k") *k = atoi(argv[++i]);
+		else if (param == "-L") *l = atoi(argv[++i]);
+		else if (param == "-N") *n = atoi(argv[++i]);
+		else if (param == "-R") *r = atof(argv[++i]);
+		else if (param == "-o") *output_file = argv[++i];
 	}
 
-	if (output_file.empty()){
+	if (output_file->empty()){
 		cerr << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
-	w = static_cast<int>(4*r);
-	if (k < 2) {
+	w = static_cast<int>(4 * (*r));
+	if (*k < 2) {
 		cerr << "The number k should be more than 2, from theory, ideally should be 4" << endl;
 		exit(ERROR);
 	}
 	// M as given from theory
-	M = pow(2, 32/k);
+	M = pow(2, 32/(*k));
 	// read data from the input_file 
 	readFile(input_file, INPUT_FILE, number_of_images, d);
 	// returning these values to main to continue execution
