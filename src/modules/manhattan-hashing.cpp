@@ -1,5 +1,4 @@
 #include <math.h>
-#include <valarray>
 #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
@@ -58,18 +57,25 @@ unsigned long long int exponentiationModulo(unsigned int x, unsigned int y, unsi
 }
 
 unsigned long customModulo(unsigned long x, unsigned long y){
-	/* Modulo between x and y, supports negative numers */
+	// Modulo between x and y, supports negative numers
 	return (x % y + y) %y;
 }
 
 unsigned long int calculateH_XComponents(int* a_i, uint64_t d) {
 	unsigned long int hx = 0;
 	unsigned long long int ma = 0;
+	int tempai = 0, temphx = 0;
 
 	for (uint64_t i=0; i<d; i++){
 		// m^x%M
+		// calculate first component of current h(x)
 		ma = exponentiationModulo(m, d-(i+1), M);
-		hx += ma*abs(a_i[i]);
+		// There is not reason to calculate a_i[i]ModM since M is way bigger than a_i[i]
+		// So this operation will always give a_i[i] as a result
+		// tempai = customModulo(a_i[i], M);
+		temphx = customModulo(ma*abs(tempai), M);
+		hx += customModulo(temphx, M);
+		// cout<<"m"<<m<<"mModM "<<ma<<" aiModM "<<tempai<<" hx_iModM "<<temphx<<" temphxModM "<<hx<<endl;
 	}
 	//need to check if hx is correct!
 	hx = customModulo(hx, M);
