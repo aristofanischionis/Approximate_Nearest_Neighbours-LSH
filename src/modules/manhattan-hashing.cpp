@@ -1,4 +1,6 @@
-#include <math.h>
+#include <cmath>
+#include <iostream>
+#include <random>
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/modulo.hpp"
 using namespace std;
@@ -39,8 +41,8 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 }
 
 unsigned long calculateH_XComponent(int* a_i, uint64_t d) {
-	unsigned long hx = 0;
-	unsigned long long ma = 0;
+	unsigned long int hx = 0;
+	unsigned long long int ma = 0;
 	int tempai = 0, temphx = 0;
 
 	cout << "m " << m << endl;

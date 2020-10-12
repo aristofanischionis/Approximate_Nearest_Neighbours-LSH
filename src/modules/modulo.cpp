@@ -1,7 +1,7 @@
 #include "../headers/modulo.hpp"
 
 // Calculate the m^x%M for x = [0,d-1]
-unsigned long long int exponentiationModulo(unsigned int x, unsigned int y, unsigned long p) {
+unsigned long long exponentiationModulo(unsigned int x, unsigned int y, unsigned int p) {
 	// Initialize result
     unsigned long long int res = 1;
     // Update x if it is more than or  
@@ -20,7 +20,7 @@ unsigned long long int exponentiationModulo(unsigned int x, unsigned int y, unsi
     return res;
 }
 
-unsigned long customModulo(unsigned long x, unsigned long y){
+unsigned long customModulo(unsigned long int x, unsigned int y){
 	// Modulo between x and y, supports negative numers
 	return (x % y + y) %y;
 }

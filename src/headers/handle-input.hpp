@@ -3,5 +3,15 @@
 #define SUCCESS 0
 #define ERROR 1
 
-void handleInput(int , char** );
-void readFile(const std::string&, int);
+// define default values
+#define SMALL_K 4
+#define SMALL_L 5
+#define	SMALL_N	1
+#define	SMALL_R	1.0
+
+// giving universal access to the all_images array
+extern unsigned char **all_images;
+
+void handleInput(int , char**, uint32_t*, uint64_t*);
+void handleReExecution(uint32_t*, uint64_t*);
+void readFile(const std::string&, int, uint32_t*, uint64_t*);

@@ -1,7 +1,6 @@
 // Function to read binary files
 #include <iostream>
 #include <fstream>
-#include <vector> 
 #include <string>
 
 #include "../headers/handle-input.hpp"
@@ -49,24 +48,24 @@ void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     }
 }
 
-void proccessEveryImage(unsigned char* x_i_array, uint64_t d) {
-    float* s_i;
-    int* a_i;
-    int hx;
-    // calculate s_i components
-    s_i = calculateURDComponents(d);
-    // calculate a_i components
-    a_i = calculateA_IComponents(x_i_array, s_i, d);
-    // Calculate a single H(x)
-    hx = calculateH_XComponent(a_i, d);
-}
+// void proccessEveryImage(unsigned char* x_i_array, uint64_t d) {
+//     float* s_i;
+//     int* a_i;
+//     int hx;
+//     // calculate s_i components
+//     s_i = calculateURDComponents(d);
+//     // calculate a_i components
+//     a_i = calculateA_IComponents(x_i_array, s_i, d);
+//     // Calculate a single H(x)
+//     hx = calculateH_XComponent(a_i, d);
+// }
 
 // void algorithm() {
     
 // }
 
 // handling the input file
-void readFile(const std::string& filename, int file_type) {
+void readFile(const std::string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
     // Checked and I receive the filename string properly
     ifstream file;
     cout << "my file name is: " << filename << endl;
@@ -79,30 +78,25 @@ void readFile(const std::string& filename, int file_type) {
         switch (file_type){
             case INPUT_FILE:
             {
-                // an array of vectors 
-                unsigned char** all_images;
                 uint32_t magic_number = 0;
-                uint32_t number_of_images = 0;
                 uint32_t number_of_rows = 0;
                 uint32_t number_of_columns = 0;
-                uint64_t d = 0;
-                getMeta(&file, magic_number, number_of_images, number_of_rows, number_of_columns);
+                getMeta(&file, magic_number, *number_of_images, number_of_rows, number_of_columns);
                 cout << "magic_number is: " << magic_number << endl;
-                cout << "number_of_images is: " << number_of_images << endl;
                 cout << "number_of_rows is: " << number_of_rows << endl;
                 cout << "number_of_columns is: " << number_of_columns << endl;
-                d = number_of_columns * number_of_rows;
+                *d = number_of_columns * number_of_rows;
                 // initialize an array of vector items (all_images)
-                all_images = new unsigned char*[number_of_images];
+                all_images = new unsigned char*[*number_of_images];
                 // loop over all images to read them
-                for (uint32_t i = 0; i < number_of_images; i++){
-                    all_images[i] = new unsigned char[d];
-                    readImage(&file, all_images[i], d);
+                for (uint32_t i = 0; i < *number_of_images; i++){
+                    all_images[i] = new unsigned char[*d];
+                    readImage(&file, all_images[i], *d);
                 }
                 // For every image, change 1--> (number_of_images)
-                for (int i = 0; i < 1; i++) {
-                    proccessEveryImage(all_images[i], d);
-                }
+                // for (int i = 0; i < 1; i++) {
+                //     proccessEveryImage(all_images[i], d);
+                // }
                 // for (uint32_t i = 0; i < number_of_images; i++){
                 //     proccessEveryImage(d, all_images[i]);
                 // }

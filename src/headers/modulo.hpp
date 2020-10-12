@@ -1,2 +1,2 @@
-unsigned long long int exponentiationModulo(unsigned int, unsigned int, unsigned long);
-unsigned long customModulo(unsigned long, unsigned long);
+unsigned long long exponentiationModulo(unsigned int, unsigned int, unsigned int);
+unsigned long customModulo(unsigned long int, unsigned int);
