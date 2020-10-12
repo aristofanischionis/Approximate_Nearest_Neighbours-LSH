@@ -49,17 +49,21 @@ void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     }
 }
 
-void proccessEveryImage(uint64_t d, unsigned char* x_i_array) {
-    float *s_i;
-    int *a_i;
+void proccessEveryImage(unsigned char* x_i_array, uint64_t d) {
+    float* s_i;
+    int* a_i;
     int hx;
     // calculate s_i components
     s_i = calculateURDComponents(d);
     // calculate a_i components
     a_i = calculateA_IComponents(x_i_array, s_i, d);
     // Calculate a single H(x)
-    hx = calculateH_XComponents(a_i, d);
+    hx = calculateH_XComponent(a_i, d);
 }
+
+// void algorithm() {
+    
+// }
 
 // handling the input file
 void readFile(const std::string& filename, int file_type) {
@@ -95,9 +99,10 @@ void readFile(const std::string& filename, int file_type) {
                     all_images[i] = new unsigned char[d];
                     readImage(&file, all_images[i], d);
                 }
-                // For every image
-                // cout << "bla " <<  static_cast<unsigned>(all_images[5][5]) << endl;
-                proccessEveryImage(d, all_images[5]);
+                // For every image, change 1--> (number_of_images)
+                for (int i = 0; i < 1; i++) {
+                    proccessEveryImage(all_images[i], d);
+                }
                 // for (uint32_t i = 0; i < number_of_images; i++){
                 //     proccessEveryImage(d, all_images[i]);
                 // }

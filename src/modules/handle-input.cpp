@@ -7,13 +7,13 @@
 using namespace std;
 
 int w;
-unsigned long M;
+unsigned int M;
 
 void handleInput(int argc, char **argv){
 	// First we need to check for the least amount of arguments required
 	// Which are 7 since we need 3 files with their param and the executable
 	if (argc < 7){
-		cout << "You need to provide the path of the files" << endl;
+		cerr << "You need to provide the path of the files" << endl;
 		exit(ERROR);
 	}	
 
@@ -26,14 +26,14 @@ void handleInput(int argc, char **argv){
 	string param = argv[1];
 	// get the path files
 	if (param != "-d"){
-		cout << "You need to provide the input_file path" << endl;
+		cerr << "You need to provide the input_file path" << endl;
 		exit(ERROR);
 	}
 	input_file = argv[2];
 
  	param = argv[3];
 	if (param != "-q"){
-		cout << "You need to provide the query_file path" << endl;
+		cerr << "You need to provide the query_file path" << endl;
 		exit(ERROR);
 	}
 	query_file = argv[4];
@@ -49,11 +49,15 @@ void handleInput(int argc, char **argv){
 	}
 
 	if (output_file.empty()){
-		cout << "You need to provide the output_file path" << endl;
+		cerr << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
 	//Here we call a function to do the work for input_file
 	w = static_cast<int>(4*r);
+	if (k < 2) {
+		cerr << "The number k should be more than 2, from theory, ideally should be 4" << endl;
+		exit(ERROR);
+	}
 	M = pow(2, 32/k);
 	readFile(input_file, INPUT_FILE);
 

@@ -1,18 +1,19 @@
 #include <math.h>
 #include "../headers/manhattan-hashing.hpp"
+#include "../headers/modulo.hpp"
 using namespace std;
 
 float* calculateURDComponents(uint64_t d){
-	float* s = new float[d];
+	float* s_i = new float[d];
 	float random;
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, (float) w);
 
-	for(uint64_t i=0; i<d; i++){ 	/* Each hash function has its own s */
+	for(uint64_t i=0; i<d; i++){ 	/* Each hash function has its own si */
 		random = distribution(generator); /* Generate a new double number */
-		s[i] = random;
+		s_i[i] = random;
 	}
-	return s;
+	return s_i;
 }
 
 int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
@@ -20,13 +21,15 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 	// for an image
 	float sub, div;
 	int *a_i = new int[d];
-	float* x_i = new float[d];
+	float x_i[d];
 
 	for (uint64_t i=0; i<d; i++) {
 		// transform the unsigned char* to float
 		x_i[i] = static_cast<float>(x_i_array[i]);
 		// do the subtraction of x_i and s_i
-		sub = x_i[i] - s_i[i];
+		// ADD w, to all x_i, this will move all of the x_i s away from the start of axis
+		// Will remove the problem of having negative numbers in the a_i components!
+		sub = x_i[i] + w - s_i[i];
 		// divide the subtraction with the w, which is globally accessible
 		div = sub / w;
 		// find the floor of the division
@@ -35,49 +38,26 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 	return a_i;
 }
 
-// Calculate the m^x%M for x = [0,d-1]
-unsigned long long int exponentiationModulo(unsigned int x, unsigned int y, unsigned long p){
-	unsigned long long int res = 1;     // Initialize result  
-  
-    x = x % p; // Update x if it is more than or  
-                // equal to p 
-   
-    if (x == 0) return 0; // In case x is divisible by p; 
-  
-    while (y > 0) {  
-        // If y is odd, multiply x with result  
-        if (y & 1)  
-            res = (res*x) % p;  
-  
-        // y must be even now  
-        y = y>>1; // y = y/2  
-        x = (x*x) % p;  
-    }  
-    return res;
-}
-
-unsigned long customModulo(unsigned long x, unsigned long y){
-	// Modulo between x and y, supports negative numers
-	return (x % y + y) %y;
-}
-
-unsigned long int calculateH_XComponents(int* a_i, uint64_t d) {
-	unsigned long int hx = 0;
-	unsigned long long int ma = 0;
+unsigned long calculateH_XComponent(int* a_i, uint64_t d) {
+	unsigned long hx = 0;
+	unsigned long long ma = 0;
 	int tempai = 0, temphx = 0;
 
-	for (uint64_t i=0; i<d; i++){
+	cout << "m " << m << endl;
+	cout << "M " << M << endl;
+	for (uint64_t i = 0; i < d; i++)
+	{
 		// m^x%M
 		// calculate first component of current h(x)
 		ma = exponentiationModulo(m, d-(i+1), M);
-		// There is not reason to calculate a_i[i]ModM since M is way bigger than a_i[i]
+		// There is no reason to calculate a_i[i]ModM since M is way bigger than a_i[i]
 		// So this operation will always give a_i[i] as a result
-		// tempai = customModulo(a_i[i], M);
-		temphx = customModulo(ma*abs(tempai), M);
+		tempai = customModulo(a_i[i], M);
+		temphx = customModulo(ma*tempai, M);
 		hx += customModulo(temphx, M);
-		// cout<<"m"<<m<<"mModM "<<ma<<" aiModM "<<tempai<<" hx_iModM "<<temphx<<" temphxModM "<<hx<<endl;
+		// cout << "mModM " << ma << " aiModM " << tempai<<" hx_iModM "<<temphx<<" temphxModM "<<hx<<endl;
 	}
-	//need to check if hx is correct!
 	hx = customModulo(hx, M);
+	cout << "final hx is: " << hx << endl;
 	return hx;
 }
