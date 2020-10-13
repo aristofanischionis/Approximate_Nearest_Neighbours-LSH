@@ -7,7 +7,7 @@
 using namespace std; 
 
 // Return the sum of distance of one axis. 
-int distancesum(int arr[], int n) { 
+int distanceSum(int arr[], int n) { 
     sort(arr, arr + n); 
     // For each point, finding the distance. 
     int res = 0, sum = 0; 
@@ -18,11 +18,9 @@ int distancesum(int arr[], int n) {
     return res; 
 } 
   
-int manhattan_distance(int x[], size_t n, int y[], size_t n1) {
-    // Calculate the number of items in the array
-    
+int manhattanDistance(int x[], size_t n, int y[], size_t n1) {
     // if the two arrays don't have same number of items return Error
     if(n != n1) {
         throw invalid_argument("The two arrays don't have the same number of items.");
-    } else return distancesum(x, n) + distancesum(y, n); 
+    } else return distanceSum(x, n) + distanceSum(y, n); 
 }

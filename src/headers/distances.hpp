@@ -1,1 +1,1 @@
-int manhattan_distance(int[], size_t , int[], size_t);
+int manhattanDistance(int[], size_t , int[], size_t);
