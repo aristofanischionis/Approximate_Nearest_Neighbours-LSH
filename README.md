@@ -2,6 +2,7 @@
 University Assignment: Implement LSH algorithm for d-dimensional vectors in C++
 
 We can run it like this, from outside of the `src/` folder
+
 `make && ./lsh -d Datasets/dataset -q rr -k 4 -L 1 -o file -N 2 -R 2.2`
 
 **File paths have to be without ""**
