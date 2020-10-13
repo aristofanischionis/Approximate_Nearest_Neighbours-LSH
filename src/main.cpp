@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     }
     // DON'T FORGET TO FREE UP ALL USED SPACE
     // free up space for all_images
-    for (int i = 0; i < number_of_images;i++){
+    for (uint32_t i = 0; i < number_of_images;i++){
         delete[] all_images[i];
     }
     delete[] all_images;

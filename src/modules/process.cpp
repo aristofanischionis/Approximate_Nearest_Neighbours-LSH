@@ -39,7 +39,7 @@ void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double
     // we need to process every image and put it in the hashtables
     for (int l = 0; l < L; l++) {
         // for all the images
-        for (int image = 0; image < number_of_images; image++) {
+        for (uint32_t image = 0; image < number_of_images; image++) {
             for (int i = 0; i < k; i++) {
                 // create h_x
                 h_x[i] = createH_X(d, image);
