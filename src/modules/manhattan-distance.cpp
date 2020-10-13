@@ -19,8 +19,6 @@ int distanceSum(int arr[], int n) {
 } 
   
 int manhattanDistance(int x[], size_t n, int y[], size_t n1) {
-    // Calculate the number of items in the array
-    
     // if the two arrays don't have same number of items return Error
     if(n != n1) {
         throw invalid_argument("The two arrays don't have the same number of items.");

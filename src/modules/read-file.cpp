@@ -28,14 +28,6 @@ void getMeta(
     return;
 }
 
-// read 784 bytes from file which are equal to an image
-// return vector!
-// each byte is a component and has a value between 0-255
-// the vector stores 'unsigned char', because it's the most efficient
-// unsigned char is a number between 0-255
-// alternatively we could use uint8_t (but needs include of a library)
-// BE CAREFUL WE PROBABLY NEED TO DO SOMETHING WITH THIS 28*28 
-// I'M NOT SURE HOW WE ARE SUPPOSED TO CREATE THE IMAGE pff
 void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     unsigned char byte;
     // read one-by-one 784 (28*28) unsigned bytes
@@ -48,22 +40,6 @@ void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     }
 }
 
-// void proccessEveryImage(unsigned char* x_i_array, uint64_t d) {
-//     float* s_i;
-//     int* a_i;
-//     int hx;
-//     // calculate s_i components
-//     s_i = calculateURDComponents(d);
-//     // calculate a_i components
-//     a_i = calculateA_IComponents(x_i_array, s_i, d);
-//     // Calculate a single H(x)
-//     hx = calculateH_XComponent(a_i, d);
-// }
-
-// void algorithm() {
-    
-// }
-
 // handling the input file
 void readFile(const std::string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
     // Checked and I receive the filename string properly
@@ -72,7 +48,6 @@ void readFile(const std::string& filename, int file_type, uint32_t* number_of_im
     file.open(filename, ios::in|ios::binary);
     // open file to start reading
     if (file.is_open()) {
-        // memblock = new char[size];
         file.seekg(0, ios::beg);
         // read the data according to file_type
         switch (file_type){
@@ -93,18 +68,6 @@ void readFile(const std::string& filename, int file_type, uint32_t* number_of_im
                     all_images[i] = new unsigned char[*d];
                     readImage(&file, all_images[i], *d);
                 }
-                // For every image, change 1--> (number_of_images)
-                // for (int i = 0; i < 1; i++) {
-                //     proccessEveryImage(all_images[i], d);
-                // }
-                // for (uint32_t i = 0; i < number_of_images; i++){
-                //     proccessEveryImage(d, all_images[i]);
-                // }
-                // free-up memory space
-                // for (uint32_t i = 0; i < number_of_images; i++){
-                //     delete[] x_i[i];
-                // }
-                // delete[] x_i;
                 break;
             }
             case QUERY_FILE:

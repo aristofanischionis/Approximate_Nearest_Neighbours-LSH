@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include "headers/handle-input.hpp"
 #include "headers/process.hpp"
@@ -21,5 +20,11 @@ int main(int argc, char **argv) {
         handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
         process(number_of_images, d, k, l, n, r);
     }
+    // DON'T FORGET TO FREE UP ALL USED SPACE
+    // free up space for all_images
+    for (int i = 0; i < number_of_images;i++){
+        delete[] all_images[i];
+    }
+    delete[] all_images;
     return SUCCESS;
 }
