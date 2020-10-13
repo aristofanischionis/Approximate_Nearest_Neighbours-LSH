@@ -4,7 +4,7 @@
 #include "../headers/modulo.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/hashtable.hpp"
-using namespace std; 
+using namespace std;
 
 // Calculate h(x) using the formula from the theory
 int createH_X (uint64_t d, int image) {
@@ -24,16 +24,18 @@ int createH_X (uint64_t d, int image) {
 // Calculate g(x) using bitwise operations
 unsigned int createG_X (int* all_of_H_X, int k) {
     unsigned int gx = all_of_H_X[0];
+    // That is the max number of bits of the h(x)
+    int shift = 32/k;
 
     for (int i=1;i<k; i++) {
-        gx<<=8;
+        gx<<=shift;
         gx |= all_of_H_X[i];
     }
 
     return gx;
 }
 
-void process (uint32_t number_of_images, uint64_t d, int k, unsigned int L, int n, double r){
+void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double r){
     int h_x[k];
     unsigned int g_x = 0;
     initializeHashtables(L, number_of_images);
