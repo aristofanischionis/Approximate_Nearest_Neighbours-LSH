@@ -45,10 +45,7 @@ unsigned long calculateH_XComponent(int* a_i, uint64_t d) {
 	unsigned long long int ma = 0;
 	int tempai = 0, temphx = 0;
 
-	cout << "m " << m << endl;
-	cout << "M " << M << endl;
-	for (uint64_t i = 0; i < d; i++)
-	{
+	for (uint64_t i = 0; i < d; i++) {
 		// m^x%M
 		// calculate first component of current h(x)
 		ma = exponentiationModulo(m, d-(i+1), M);
