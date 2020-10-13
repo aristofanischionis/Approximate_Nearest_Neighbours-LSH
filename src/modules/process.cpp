@@ -3,6 +3,7 @@
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/modulo.hpp"
 #include "../headers/handle-input.hpp"
+#include "../headers/hashtable.hpp"
 using namespace std; 
 
 // Calculate h(x) using the formula from the theory
@@ -32,9 +33,10 @@ unsigned int createG_X (int* all_of_H_X, int k) {
     return gx;
 }
 
-void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double r){
+void process (uint32_t number_of_images, uint64_t d, int k, unsigned int L, int n, double r){
     int h_x[k];
     unsigned int g_x = 0;
+    initializeHashtables(L, number_of_images);
     // now we can initialize hash tables and continue
     // we need to process every image and put it in the hashtables
     for (int l = 0; l < L; l++) {
@@ -48,6 +50,7 @@ void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double
             g_x = createG_X(h_x, k);
             // pass to hashtable
             // cout << "final g(x) is: " << g_x << endl;
+            insertToHashtable(L, image, g_x);
         }
     }
 }
