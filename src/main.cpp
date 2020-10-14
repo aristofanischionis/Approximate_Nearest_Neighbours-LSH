@@ -2,12 +2,10 @@
 #include <vector>
 #include "headers/handle-input.hpp"
 #include "headers/process.hpp"
-#include "headers/hashtable.hpp"
 
 using namespace std; 
 
 unsigned char** all_images = NULL;
-vector<unsigned int>** HashTables = NULL;
 
 int main(int argc, char **argv) {
     uint32_t number_of_images = 0;
