@@ -11,18 +11,18 @@ using namespace std;
 void getMeta(
     ifstream *file, 
     uint32_t &magic_number, 
-    uint32_t &number_of_images, 
+    uint32_t &image_number, 
     uint32_t &number_of_rows, 
     uint32_t &number_of_columns
     ) {
     // read them from file
     (*file).read(reinterpret_cast<char *>(&magic_number), sizeof(magic_number));
-    (*file).read(reinterpret_cast<char *>(&number_of_images), sizeof(number_of_images));
+    (*file).read(reinterpret_cast<char *>(&image_number), sizeof(image_number));
     (*file).read(reinterpret_cast<char *>(&number_of_rows), sizeof(number_of_rows));
     (*file).read(reinterpret_cast<char *>(&number_of_columns), sizeof(number_of_columns));
     // convert them to high endian
     magic_number = __builtin_bswap32(magic_number);
-    number_of_images = __builtin_bswap32(number_of_images);
+    image_number = __builtin_bswap32(image_number);
     number_of_rows = __builtin_bswap32(number_of_rows);
     number_of_columns = __builtin_bswap32(number_of_columns);
 }
@@ -36,41 +36,63 @@ void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     }
 }
 
+void initializeImageArray(ifstream *file, int file_type, uint32_t image_number, uint64_t d) {
+    if (file_type == INPUT_FILE) {
+        // initialize the array of vector items (all_images) for input_data
+        all_images = new unsigned char *[image_number];
+        // loop over all images to read them
+        for (uint32_t i = 0; i < image_number; i++) {
+            all_images[i] = new unsigned char[d];
+            readImage(file, all_images[i], d);
+        }
+    } 
+    else if (file_type == QUERY_FILE) {
+        // initialize the array for the query dataset
+        query_images = new unsigned char *[image_number];
+        // loop over all images to read them
+        for (uint32_t i = 0; i < image_number; i++) {
+            query_images[i] = new unsigned char[d];
+            readImage(file, query_images[i], d);
+        }
+    }
+}
+
+void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint64_t d) {
+    cout << "INPUT DATASET:" << endl;
+    for (int i = 0; i < number_of_images; i++){
+        cout << "next image" << endl;
+        for (int j = 0; j < d; j++) {
+            cout << static_cast<unsigned>(all_images[i][j]) << '\t';
+        }
+        cout << endl;
+    }
+    cout << "QUERY DATASET:" << endl;
+    for (int i = 0; i < number_of_query_images; i++)
+    {
+        cout << "next image" << endl;
+        for (int j = 0; j < d; j++) {
+            cout << static_cast<unsigned>(query_images[i][j]) << '\t';
+        }
+        cout << endl;
+    }
+}
+
 // handling the input file
-void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
+void readFile(const string& filename, int file_type, uint32_t* image_number, uint64_t* d) {
     ifstream file;
+    uint32_t magic_number = 0;
+    uint32_t number_of_rows = 0;
+    uint32_t number_of_columns = 0;
     // open file to start reading
     file.open(filename, ios::in|ios::binary);
-
     if (!file.is_open()){
         cerr << "Unable to open file" << endl;
         exit(ERROR);
     }
-
     file.seekg(0, ios::beg);
-    // read the data according to file_type
-    switch (file_type) {
-        case INPUT_FILE: {
-            uint32_t magic_number = 0;
-            uint32_t number_of_rows = 0;
-            uint32_t number_of_columns = 0;
-            getMeta(&file, magic_number, *number_of_images, number_of_rows, number_of_columns);
-            *d = number_of_columns * number_of_rows;
-            // initialize an array of vector items (all_images)
-            all_images = new unsigned char*[*number_of_images];
-            // loop over all images to read them
-            for (uint32_t i = 0; i < *number_of_images; i++) {
-                all_images[i] = new unsigned char[*d];
-                readImage(&file, all_images[i], *d);
-            }
-            break;
-        }
-        case QUERY_FILE:
-            //TODO: Read query file and search in hashtables
-            break;
-        default:
-            cout << "It is not the input_file or query_file" << endl;
-            break;
-    }
+    // start reading from file
+    getMeta(&file, magic_number, *image_number, number_of_rows, number_of_columns);
+    *d = number_of_columns * number_of_rows;
+    initializeImageArray(&file, file_type, *image_number, *d);
     file.close();
 }

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-vector<vector<vector<unsigned int>>> HashTables;
+vector<vector<vector<unsigned int> > > HashTables;
 
 void initializeHashtables(unsigned int L, uint32_t n) {
 	int hashtable_size = n/HASHTABLE_NUMBER;
@@ -31,6 +31,13 @@ void printHashtable(int L, int n) {
 	}
 }
 
-void deleteHashtable() {
-
+void deleteHashtable(int L, int n) {
+    int hashtable_size = n/HASHTABLE_NUMBER;
+    for (int i = 0; i < L;i++) {
+        for (int j = 0; j < hashtable_size;j++) {
+            HashTables[i][j].clear();
+        }
+        HashTables[i].clear();
+    }
+    HashTables.clear();
 }
