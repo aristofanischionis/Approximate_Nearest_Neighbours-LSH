@@ -51,7 +51,7 @@ void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double
             // create g_x
             g_x = createG_X(h_x, k);
             // pass to hashtable
-            insertToHashtable(L, image, g_x, number_of_images);
+            insertToHashtable(l, image, g_x, number_of_images);
         }
     }
     printHashtable(L, number_of_images);
