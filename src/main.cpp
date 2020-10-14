@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
     // Here we start the loop after the first execution of the program
     while(true) {
         handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
+        readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         process(number_of_images, d, k, l, n, r);
     }
     // DON'T FORGET TO FREE UP ALL USED SPACE
