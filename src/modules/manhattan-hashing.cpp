@@ -5,7 +5,7 @@
 #include "../headers/modulo.hpp"
 using namespace std;
 
-float* calculateURDComponents(uint64_t d){
+float* calculateURDComponents(uint64_t d) {
 	float* s_i = new float[d];
 	float random;
 	random_device generator;
@@ -43,19 +43,18 @@ int* calculateA_IComponents(unsigned char* x_i_array, float* s_i, uint64_t d) {
 
 unsigned long calculateH_XComponent(int* a_i, uint64_t d) {
 	unsigned long int hx = 0;
-	unsigned long long int ma = 0;
+	unsigned long long int mExp = 0;
 	int tempai = 0, temphx = 0;
 
+	// calculate each component of current h(x)
 	for (uint64_t i = 0; i < d; i++) {
 		// m^x%M
-		// calculate first component of current h(x)
-		ma = exponentiationModulo(m, d-(i+1), M);
-		// There is no reason to calculate a_i[i]ModM since M is way bigger than a_i[i]
-		// So this operation will always give a_i[i] as a result
+		mExp = exponentiationModulo(m, d-(i+1), M);
 		tempai = customModulo(a_i[i], M);
-		temphx = customModulo(ma*tempai, M);
+		temphx = customModulo(mExp*tempai, M);
 		hx += customModulo(temphx, M);
 	}
+	
 	hx = customModulo(hx, M);
 	return hx;
 }

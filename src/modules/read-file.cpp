@@ -25,59 +25,52 @@ void getMeta(
     number_of_images = __builtin_bswap32(number_of_images);
     number_of_rows = __builtin_bswap32(number_of_rows);
     number_of_columns = __builtin_bswap32(number_of_columns);
-    return;
 }
 
 void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     unsigned char byte;
-    // read one-by-one 784 (28*28) unsigned bytes
-    for (uint64_t i = 0; i < d; i++){
+    // read one-by-one d (number_of_rows * number_of_columns) dunsigned bytes
+    for (uint64_t i = 0; i < d; i++) {
         (*file).read(reinterpret_cast<char*>(&byte), 1);
-        // with the following cout we see that most of the bytes have the value of 0
-        // but some of them have values like 15, 235, 204, 124, etc
-        // cout << "byte is: " << static_cast<unsigned>(byte) << endl;
         image[i] = byte;
     }
 }
 
 // handling the input file
-void readFile(const std::string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
-    // Checked and I receive the filename string properly
+void readFile(const string& filename, int file_type, uint32_t* number_of_images, uint64_t* d) {
     ifstream file;
-    cout << "my file name is: " << filename << endl;
-    file.open(filename, ios::in|ios::binary);
     // open file to start reading
-    if (file.is_open()) {
-        file.seekg(0, ios::beg);
-        // read the data according to file_type
-        switch (file_type){
-            case INPUT_FILE:
-            {
-                uint32_t magic_number = 0;
-                uint32_t number_of_rows = 0;
-                uint32_t number_of_columns = 0;
-                getMeta(&file, magic_number, *number_of_images, number_of_rows, number_of_columns);
-                cout << "magic_number is: " << magic_number << endl;
-                cout << "number_of_rows is: " << number_of_rows << endl;
-                cout << "number_of_columns is: " << number_of_columns << endl;
-                *d = number_of_columns * number_of_rows;
-                // initialize an array of vector items (all_images)
-                all_images = new unsigned char*[*number_of_images];
-                // loop over all images to read them
-                for (uint32_t i = 0; i < *number_of_images; i++){
-                    all_images[i] = new unsigned char[*d];
-                    readImage(&file, all_images[i], *d);
-                }
-                break;
-            }
-            case QUERY_FILE:
-                break;
-            default:
-                cout << "It is not the input_file or query_file" << endl;
-                break;
-        }
-        file.close();
+    file.open(filename, ios::in|ios::binary);
+
+    if (!file.is_open()){
+        cerr << "Unable to open file" << endl;
+        exit(ERROR);
     }
-    else cout << "Unable to open file" << endl;
-  return;
+
+    file.seekg(0, ios::beg);
+    // read the data according to file_type
+    switch (file_type) {
+        case INPUT_FILE: {
+            uint32_t magic_number = 0;
+            uint32_t number_of_rows = 0;
+            uint32_t number_of_columns = 0;
+            getMeta(&file, magic_number, *number_of_images, number_of_rows, number_of_columns);
+            *d = number_of_columns * number_of_rows;
+            // initialize an array of vector items (all_images)
+            all_images = new unsigned char*[*number_of_images];
+            // loop over all images to read them
+            for (uint32_t i = 0; i < *number_of_images; i++) {
+                all_images[i] = new unsigned char[*d];
+                readImage(&file, all_images[i], *d);
+            }
+            break;
+        }
+        case QUERY_FILE:
+            //TODO: Read query file and search in hashtables
+            break;
+        default:
+            cout << "It is not the input_file or query_file" << endl;
+            break;
+    }
+    file.close();
 }

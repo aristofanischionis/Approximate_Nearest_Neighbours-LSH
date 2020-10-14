@@ -28,7 +28,7 @@ unsigned int createG_X (int* all_of_H_X, int k) {
     int shift = 32/k;
 
     for (int i=1;i<k; i++) {
-        gx<<=shift;
+        gx <<= shift;
         gx |= all_of_H_X[i];
     }
 
@@ -38,20 +38,19 @@ unsigned int createG_X (int* all_of_H_X, int k) {
 void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double r){
     int h_x[k];
     unsigned int g_x = 0;
-    initializeHashtables(L, number_of_images);
     // now we can initialize hash tables and continue
-    // we need to process every image and put it in the hashtables
-    for (int l = 0; l < L; l++) {
-        // for all the images
+    initializeHashtables(L, number_of_images);
+    
+    for (int l=0; l<L; l++) {
+        // we process every image and put it in the hashtables
         for (uint32_t image = 0; image < number_of_images; image++) {
-            for (int i = 0; i < k; i++) {
+            for (int i=0; i<k; i++) {
                 // create h_x
                 h_x[i] = createH_X(d, image);
             }
             // create g_x
             g_x = createG_X(h_x, k);
             // pass to hashtable
-            // cout << "final g(x) is: " << g_x << endl;
             insertToHashtable(L, image, g_x);
         }
     }
