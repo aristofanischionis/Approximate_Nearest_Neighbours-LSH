@@ -22,13 +22,13 @@ unsigned int* convertArray(unsigned char* array, int size) {
 // calls approximateNN with the correct way (A or B)
 // q_num: is an index of the query to search in the query_images[]
 vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images, int number_of_query_images) {
-    unsigned int min_distance = m;
     vector<uint32_t> n_neighbours;
+    unsigned int min_distance = m;
     unsigned int current_gp = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
-    // we start putting neighbours from farthest to closest 
+    // we start putting neighbours from farthest to closest
     int k_th_neighbour = n;
     unsigned int* qarray, *parray;
     // for all hash_tables
@@ -42,7 +42,7 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
             exit(ERROR);
         }
         // loop over the bucket
-        cout << "Current hashtable: " << l << endl;
+        // cout << "Current hashtable: " << l << endl;
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
@@ -53,8 +53,8 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
             delete[] parray;
             if((current_distance < min_distance) && (k_th_neighbour > 0)) {
                 // we keep this neighbour and also keep the distance?!
-                n_neighbours.push_back(q_num);
-                cout << "K-th neighbour is: " << k_th_neighbour << " current_distance: " << current_distance << " q_num: " << q_num << endl;
+                n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
+                // cout << "K-th neighbour is: " << k_th_neighbour << " current_distance: " << current_distance << " q_num: " << q_num << endl;
                 min_distance = current_distance;
                 k_th_neighbour--;
             }
@@ -72,6 +72,30 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
         // return n_neighbours;
         // finished with this hash table
     }
+    cout<<"ANN distance: "<<current_distance<<endl;
+    return n_neighbours;
+}
+
+vector<uint32_t> approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images, int number_of_query_images) {
+    vector<uint32_t> n_neighbours;
+    unsigned int min_distance = m;
+    unsigned int current_distance = 0;
+    unsigned int* qarray, *parray;
+    int k_th_neighbour = n;
+    for (int i=0; i<number_of_images; i++) {
+        qarray = convertArray(query_images[q_num], number_of_query_images);
+        parray = convertArray(all_images[i], number_of_images);
+        current_distance = manhattanDistance(qarray, parray, d);
+        delete[] qarray;
+        delete[] parray;
+        if((current_distance < min_distance) && (k_th_neighbour > 0)) {
+            cout << "min distance " << min_distance << " current_distance: " << current_distance << " current index of all_images: " << i << endl;
+            n_neighbours.push_back(i);
+            min_distance = current_distance;
+            k_th_neighbour--;
+        }
+    }
+    cout<<"BF distance: "<<current_distance<<endl;
     return n_neighbours;
 }
 

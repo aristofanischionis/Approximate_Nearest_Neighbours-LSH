@@ -5,7 +5,8 @@
 #include "headers/hashtable.hpp"
 #include "headers/hashtable.hpp"
 #include "headers/search.hpp"
-using namespace std; 
+using namespace std;
+#include <iostream>
 
 unsigned char** all_images = NULL;
 unsigned char** query_images = NULL;
@@ -20,28 +21,37 @@ int main(int argc, char **argv) {
 	int n = SMALL_N;
 	double r = SMALL_R;
     string output_file, query_file;
-    vector<uint32_t> ANN;
+    vector<uint32_t> ANN, BNN;
     
     handleInput(argc, argv, &number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
     do {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         process(number_of_images, d, k, l, n, r);
-        for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++){
-            ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
+        for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
+            // ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
+            BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images, number_of_query_images);
+            for (unsigned int i =0;i<ANN.size();i++) {
+                cout<<"ANN neighbour: "<<ANN[i]<<endl;
+            }
+            for (unsigned int i =0;i<BNN.size();i++) {
+                cout<<"BF neighbour: "<<BNN[i]<<endl;
+            }
         }
         handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
     } while (true);
     // DON'T FORGET TO FREE UP ALL USED SPACE
     // free up space for all_images
     // !!make function!!
-    for (uint32_t i = 0; i < number_of_images;i++){
+    for (uint32_t i = 0; i < number_of_images;i++) {
         delete[] all_images[i];
     }
     delete[] all_images;
-    for (uint32_t i = 0; i < number_of_query_images;i++){
+    for (uint32_t i = 0; i < number_of_query_images;i++) {
         delete[] query_images[i];
     }
     delete[] query_images;
+    ANN.clear()
+    BNN.clear()
     deleteHashtable(l, number_of_images);
     return SUCCESS;
 }
