@@ -4,6 +4,7 @@
 extern int w;
 extern unsigned int M;
 // uniform_real_distribution components
-float* calculateURDComponents(uint64_t);
-int* calculateA_IComponents(unsigned char *, float *, uint64_t);
-unsigned long int calculateH_XComponent(int*, uint64_t);
+// float* calculateURDComponents(uint64_t);
+// int* calculateA_IComponents(unsigned char *, float *, uint64_t);
+// unsigned long int calculateH_XComponent(int*, uint64_t);
+unsigned int calculateG_X(int, int, uint32_t, int);

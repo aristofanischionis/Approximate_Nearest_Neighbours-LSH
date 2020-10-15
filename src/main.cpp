@@ -3,6 +3,8 @@
 #include "headers/handle-input.hpp"
 #include "headers/process.hpp"
 #include "headers/hashtable.hpp"
+#include "headers/hashtable.hpp"
+#include "headers/search.hpp"
 using namespace std; 
 
 unsigned char** all_images = NULL;
@@ -18,15 +20,17 @@ int main(int argc, char **argv) {
 	int n = SMALL_N;
 	double r = SMALL_R;
     string output_file, query_file;
+    vector<uint32_t> ANN;
+    
     handleInput(argc, argv, &number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
-    readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
-    process(number_of_images, d, k, l, n, r);
-    // Here we start the loop after the first execution of the program
-    while(true) {
-        handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
+    do {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         process(number_of_images, d, k, l, n, r);
-    }
+        for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++){
+            ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
+        }
+        handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
+    } while (true);
     // DON'T FORGET TO FREE UP ALL USED SPACE
     // free up space for all_images
     // !!make function!!

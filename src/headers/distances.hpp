@@ -1,1 +1,2 @@
-int manhattanDistance(int[], size_t , int[], size_t);
+#include <stdint.h>
+unsigned int manhattanDistance(unsigned int*, unsigned int*, uint64_t);
