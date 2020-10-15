@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         process(number_of_images, d, k, l, n, r);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
-            // ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
+            ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
             BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images, number_of_query_images);
             for (unsigned int i =0;i<ANN.size();i++) {
                 cout<<"ANN neighbour: "<<ANN[i]<<endl;
@@ -36,6 +36,8 @@ int main(int argc, char **argv) {
             for (unsigned int i =0;i<BNN.size();i++) {
                 cout<<"BF neighbour: "<<BNN[i]<<endl;
             }
+            ANN.clear();
+            BNN.clear();
         }
         handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
     } while (true);
@@ -50,8 +52,6 @@ int main(int argc, char **argv) {
         delete[] query_images[i];
     }
     delete[] query_images;
-    ANN.clear()
-    BNN.clear()
     deleteHashtable(l, number_of_images);
     return SUCCESS;
 }
