@@ -36,7 +36,7 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
         // calculating g(q)
         current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
         pos_in_hash = customModulo(current_gp, M);
-        if(pos_in_hash > hashtable_size -1) {
+        if (pos_in_hash > hashtable_size -1) {
             // then something went wrong with g(p)
             cerr << "Calculating g(q) went wrong" << endl;
             exit(ERROR);
@@ -50,15 +50,14 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
             current_distance = manhattanDistance(qarray, parray, d);
             delete[] qarray;
             delete[] parray;
-            if(current_distance < min_distance) {
+            if (current_distance < min_distance) {
                 // Check if element exists in vector
-                if(find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
+                if (find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
                     // we keep this neighbour and also keep the distance?!
                     n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
                 }
                 min_distance = current_distance;
             }
-
             // take into account a maximum of (10 * L) points in each hashtable
             if (h > static_cast<unsigned int>(10*L)) {
                 // break the loop to continue with next hashtable
@@ -86,8 +85,7 @@ vector<uint32_t> approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num,
         current_distance = manhattanDistance(qarray, parray, d);
         delete[] qarray;
         delete[] parray;
-        if(current_distance < min_distance) {
-            // Check if element exists in vector
+        if (current_distance < min_distance) {
             n_neighbours.push_back(i);
             min_distance = current_distance;
         }
@@ -97,6 +95,50 @@ vector<uint32_t> approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num,
 }
 
 // searches using range search Brute force
-void rangeSearch () {
-    
+vector<uint32_t> rangeSearch (uint64_t d, int k, int n, int L, uint32_t q_num, double radius,int number_of_images, int number_of_query_images) {
+    vector<uint32_t> n_neighbours;
+    unsigned int current_gp = 0;
+    unsigned int current_distance = 0;
+    int pos_in_hash = 0;
+    int hashtable_size = number_of_images / HASHTABLE_NUMBER;
+    // we start putting neighbours from farthest to closest
+    unsigned int* qarray, *parray;
+    // for all hash_tables
+    for (int l = 0; l < L; l++) {
+        // calculating g(q)
+        current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
+        pos_in_hash = customModulo(current_gp, M);
+        if (pos_in_hash > hashtable_size -1) {
+            // then something went wrong with g(p)
+            cerr << "Calculating g(q) went wrong" << endl;
+            exit(ERROR);
+        }
+        // loop over the bucket
+        for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
+            // calculate the Manhattan distance of q and every other image in the bucket
+            // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
+            qarray = convertArray(query_images[q_num], number_of_query_images);
+            parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], number_of_images);
+            current_distance = manhattanDistance(qarray, parray, d);
+            delete[] qarray;
+            delete[] parray;
+            if (static_cast<double>(current_distance) < radius) {
+                // Check if element exists in vector
+                if (find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
+                    // we keep this neighbour and also keep the distance?!
+                    n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
+                }
+            }
+            // take into account a maximum of (10 * L) points in each hashtable
+            if (h > static_cast<unsigned int>(10*L)) {
+                // break the loop to continue with next hashtable
+                break;
+            }
+        }
+        // finished with this hash table
+    }
+    sort(n_neighbours.begin(), n_neighbours.end());
+    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
+    cout<<"Range distance: "<<current_distance<<endl;
+    return n_neighbours;
 }
