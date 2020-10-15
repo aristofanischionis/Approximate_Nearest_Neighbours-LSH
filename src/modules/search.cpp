@@ -8,7 +8,7 @@
 using namespace std;
 
 unsigned int* convertArray(unsigned char* array, int size) {
-    unsigned int *result_array = NULL;
+    unsigned int *result_array = new unsigned int(size);
     for (int i = 0; i < size;i++) {
         result_array[i] = static_cast<unsigned int>(array[i]);
     }
@@ -30,6 +30,7 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest 
     int k_th_neighbour = n;
+    unsigned int* qarray, *parray;
     // for all hash_tables
     for (int l = 0; l < L; l++) {
         // calculating g(q)
@@ -42,15 +43,14 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
         }
         // loop over the bucket
         cout << "Current hashtable: " << l << endl;
-        for (int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
+        for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
-            cout << "q_num " << q_num;
-            cout << "query_images[q_num]: " << query_images[q_num] << "query_images[q_num]: " << query_images[q_num] << endl;
-            cout << "HashTables[l][pos_in_hash][h] " << HashTables[l][pos_in_hash][h] << endl;
-            cout << "all_images[HashTables[l][pos_in_hash][h]] " << all_images[HashTables[l][pos_in_hash][h]] << endl;
-            current_distance = manhattanDistance(convertArray(query_images[q_num], number_of_query_images), convertArray(all_images[HashTables[l][pos_in_hash][h]], number_of_images), d);
-            cout << "shit" << endl;
+            qarray = convertArray(query_images[q_num], number_of_query_images);
+            parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], number_of_images);
+            current_distance = manhattanDistance(qarray, parray, d);
+            delete[] qarray;
+            delete[] parray;
             if((current_distance < min_distance) && (k_th_neighbour > 0)) {
                 // we keep this neighbour and also keep the distance?!
                 n_neighbours.push_back(q_num);
@@ -63,7 +63,7 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
                 return n_neighbours;
 
             // take into account a maximum of (10 * L) points in each hashtable
-            if (h > 10*L) {
+            if (h > static_cast<unsigned int>(10*L)) {
                 // return n_neighbours;
                 // break the loop to continue with next hashtable
                 break;

@@ -2,13 +2,14 @@
 // distances between all the pairs of 
 // given points 
 #include <algorithm>
+#include <stdint.h>
 using namespace std;
 // Return the sum of distance of one axis.
 unsigned int distanceSum(unsigned int* arr, uint64_t n) { 
     sort(arr, arr + n); 
     // For each point, finding the distance. 
     int res = 0, sum = 0; 
-    for (int i = 0; i < n; i++) { 
+    for (uint64_t i = 0; i < n; i++) { 
         res += (arr[i] * i - sum); 
         sum += arr[i]; 
     }
