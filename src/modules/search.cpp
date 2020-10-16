@@ -22,8 +22,8 @@ unsigned int* convertArray(unsigned char* array, int size) {
 // takes a N from user 
 // calls approximateNN with the correct way (A or B)
 // q_num: is an index of the query to search in the query_images[]
-vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images, int number_of_query_images) {
-    vector<uint32_t> n_neighbours;
+vector<pair <unsigned int, unsigned int> > approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images, int number_of_query_images) {
+    vector<pair <unsigned int, unsigned int> > n_neighbours;
     unsigned int min_distance = m;
     unsigned int current_gp = 0;
     unsigned int current_distance = 0;
@@ -52,10 +52,11 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
             delete[] parray;
             if (current_distance < min_distance) {
                 // Check if element exists in vector
-                if (find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
+                // if (find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
                     // we keep this neighbour and also keep the distance?!
-                    n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
-                }
+                    // n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
+                // }
+                n_neighbours.push_back(make_pair(HashTables[l][pos_in_hash][h], current_distance));
                 min_distance = current_distance;
             }
             // take into account a maximum of (10 * L) points in each hashtable
@@ -66,9 +67,8 @@ vector<uint32_t> approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_n
         }
         // finished with this hash table
     }
-    sort(n_neighbours.begin(), n_neighbours.end());
-    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
-    cout<<"ANN distance: "<<current_distance<<endl;
+    reverse(n_neighbours.begin(), n_neighbours.end());
+    if (n_neighbours.size() > static_cast<unsigned int>(n)) n_neighbours.resize(n);
     return n_neighbours;
 }
 
