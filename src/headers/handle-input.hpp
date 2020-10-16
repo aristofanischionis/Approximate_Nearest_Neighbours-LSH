@@ -9,7 +9,7 @@
 #define SMALL_K 4
 #define SMALL_L 5
 #define	SMALL_N	1
-#define	SMALL_R	1.0
+#define	SMALL_R	10000
 
 using namespace std;
 // giving universal access to the all_images array

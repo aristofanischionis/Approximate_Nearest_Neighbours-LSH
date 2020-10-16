@@ -51,11 +51,6 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (uint64_t d, int k, 
             delete[] qarray;
             delete[] parray;
             if (current_distance < min_distance) {
-                // Check if element exists in vector
-                // if (find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
-                    // we keep this neighbour and also keep the distance?!
-                    // n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
-                // }
                 n_neighbours.push_back(make_pair(HashTables[l][pos_in_hash][h], current_distance));
                 min_distance = current_distance;
             }
@@ -73,8 +68,9 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (uint64_t d, int k, 
 }
 
 // Brute Force
-vector<uint32_t> approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images, int number_of_query_images) {
-    vector<uint32_t> n_neighbours;
+vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images, int number_of_query_images) {
+    vector<pair <unsigned int, unsigned int> > n_neighbours;
+    vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int min_distance = m;
     unsigned int current_distance = 0;
     unsigned int* qarray, *parray;
@@ -86,17 +82,29 @@ vector<uint32_t> approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num,
         delete[] qarray;
         delete[] parray;
         if (current_distance < min_distance) {
-            n_neighbours.push_back(i);
+            unsigned int temp = static_cast<unsigned int>(i);
+                it = find_if(
+                    n_neighbours.begin(),
+                    n_neighbours.end(),
+                    [&temp](const pair<unsigned int, unsigned int> &current_pair)
+                    { return current_pair.first == temp; });
+                // if item NOT exists, then push this item in the vector
+                if(it == n_neighbours.end()){
+                    n_neighbours.push_back(make_pair(temp, current_distance));
+                }
             min_distance = current_distance;
         }
     }
-    cout<<"BF distance: "<<current_distance<<endl;
+    sort(n_neighbours.begin(), n_neighbours.end());
+    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
     return n_neighbours;
 }
 
-// searches using range search Brute force
-vector<uint32_t> rangeSearch (uint64_t d, int k, int n, int L, uint32_t q_num, double radius,int number_of_images, int number_of_query_images) {
-    vector<uint32_t> n_neighbours;
+
+// searches using range search
+vector<pair <unsigned int, unsigned int> > rangeSearch (uint64_t d, int k, int n, int L, uint32_t q_num, double radius,int number_of_images, int number_of_query_images) {
+    vector<pair <unsigned int, unsigned int> > n_neighbours;
+    vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_gp = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
@@ -123,10 +131,17 @@ vector<uint32_t> rangeSearch (uint64_t d, int k, int n, int L, uint32_t q_num, d
             delete[] qarray;
             delete[] parray;
             if (static_cast<double>(current_distance) < radius) {
-                // Check if element exists in vector
-                if (find(n_neighbours.begin(), n_neighbours.end(), HashTables[l][pos_in_hash][h]) == n_neighbours.end()) {
-                    // we keep this neighbour and also keep the distance?!
-                    n_neighbours.push_back(HashTables[l][pos_in_hash][h]);
+                // search if there is already inside
+                // using lambda function
+                unsigned int temp = HashTables[l][pos_in_hash][h];
+                it = find_if(
+                    n_neighbours.begin(),
+                    n_neighbours.end(),
+                    [&temp](const pair<unsigned int, unsigned int> &current_pair)
+                    { return current_pair.first == temp; });
+                // if item NOT exists, then push this item in the vector
+                if(it == n_neighbours.end()){
+                    n_neighbours.push_back(make_pair(temp, current_distance));
                 }
             }
             // take into account a maximum of (10 * L) points in each hashtable
@@ -135,10 +150,8 @@ vector<uint32_t> rangeSearch (uint64_t d, int k, int n, int L, uint32_t q_num, d
                 break;
             }
         }
-        // finished with this hash table
     }
     sort(n_neighbours.begin(), n_neighbours.end());
     if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
-    cout<<"Range distance: "<<current_distance<<endl;
     return n_neighbours;
 }

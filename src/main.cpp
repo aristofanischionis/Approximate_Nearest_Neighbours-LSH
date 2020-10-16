@@ -21,10 +21,10 @@ int main(int argc, char **argv) {
 	int n = SMALL_N;
 	double r = SMALL_R;
     string output_file, query_file;
-    // vector<uint32_t> ANN, BNN;
-    vector<pair<unsigned int, unsigned int> > ANN;
-
+    vector<pair<unsigned int, unsigned int> > ANN, RSNN, BNN;
+    
     handleInput(argc, argv, &number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
+
     do {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         process(number_of_images, d, k, l, n, r);
@@ -34,11 +34,12 @@ int main(int argc, char **argv) {
             for (unsigned int i =0;i<ANN.size();i++) {
                 cout<<"ANN neighbour: " << ANN[i].first << " val: " << ANN[i].second <<endl;
             }
-            // for (unsigned int i =0;i<BNN.size();i++) {
-            //     cout<<"BF neighbour: "<<BNN[i]<<endl;
-            // }
+            RSNN = rangeSearch(d, k, n, l, q_num, 31111111, number_of_images, number_of_query_images);
+            for (unsigned int i =0;i<RSNN.size();i++) {
+                cout<<"RSNN neighbour: "<<RSNN[i].first << " val: " << RSNN[i].second<<endl;
+            }
             ANN.clear();
-            // BNN.clear();
+            RSNN.clear();
         }
         handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
     } while (true);

@@ -3,7 +3,7 @@ SOURCE =  src/main.cpp src/modules/manhattan-distance.cpp src/modules/handle-inp
 OBJS = main.o manhattan-distance.o handle-input.o read-file.o manhattan-hashing.o modulo.o process.o hashtable.o search.o
 
 CXX = g++
-FLAGS = -g -c -Wall
+FLAGS = -std=c++11 -g -c -Wall
 OUT = lsh
 
 all: $(OUT)
