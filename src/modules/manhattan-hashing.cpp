@@ -1,10 +1,32 @@
-#include <cmath>
 #include <iostream>
 #include <random>
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/modulo.hpp"
+#include "../headers/search.hpp"
+#include "../headers/distances.hpp"
 using namespace std;
+
+void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number_of_query_images) {
+	unsigned int* qarray, *parray;
+	vector <unsigned int> distances;
+	// pick a ramdom query image
+	int randNum = rand()%number_of_query_images;
+	qarray = convertArray(query_images[randNum], d);
+	for (uint32_t image=0; image<number_of_images; image++){
+		// convert array do it with vector bruuuuh
+    	parray = convertArray(all_images[image], d);
+    	distances.push_back(manhattanDistance(qarray, parray, d));
+    	delete[] parray;
+	}
+    delete[] qarray;
+
+    auto sum = std::accumulate(distances.begin(), distances.end(), 0.0);
+    cout<<sum<<endl;
+	auto mean = sum / distances.size();
+	w = mean*5;
+	distances.clear();
+}
 
 float* calculateURDComponents(uint64_t d) {
 	float* s_i = new float[d];

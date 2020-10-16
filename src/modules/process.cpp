@@ -6,7 +6,7 @@
 #include "../headers/hashtable.hpp"
 using namespace std;
 
-void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, double r){
+void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, unsigned int r){
     unsigned int g_x = 0;
     // now we can initialize hash tables and continue
     initializeHashtables(L, number_of_images);

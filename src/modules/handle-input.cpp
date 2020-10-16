@@ -1,13 +1,11 @@
 // Function to handle the input given from command line
 #include <iostream>
 #include <sstream>
-#include <string>
-#include <cmath> 
+#include <cmath>
 #include "../headers/handle-input.hpp"
 #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
-int w;
 unsigned int M;
 
 void handleReExecution (
@@ -16,7 +14,7 @@ void handleReExecution (
 	int *k,
 	int *l,
 	int *n,
-	double *r,
+	unsigned int *r,
 	string *output_file,
 	string *query_file
 	) {
@@ -86,7 +84,6 @@ void handleReExecution (
 		exit(ERROR);
 	}
 
-	w = static_cast<int>(4 * (*r));
 	if (*k < 2)	{
 		cerr << "The number k should be more than 2, from theory, ideally should be 4" << endl;
 		exit(ERROR);
@@ -104,7 +101,7 @@ void handleInput(
 	int *k,
 	int *l,
 	int *n,
-	double *r,
+	unsigned int *r,
 	string *output_file,
 	string *query_file
 	){
@@ -145,7 +142,7 @@ void handleInput(
 		cerr << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}
-	w = static_cast<int>(4 * (*r));
+	
 	if (*k < 2) {
 		cerr << "The number k should be more than 2, from theory, ideally should be 4" << endl;
 		exit(ERROR);

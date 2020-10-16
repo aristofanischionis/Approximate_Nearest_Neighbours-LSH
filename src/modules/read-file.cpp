@@ -1,8 +1,6 @@
 // Function to read binary files
 #include <iostream>
 #include <fstream>
-#include <string>
-
 #include "../headers/handle-input.hpp"
 #include "../headers/manhattan-hashing.hpp"
 using namespace std;

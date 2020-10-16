@@ -1,15 +1,17 @@
-#include <string>
 #include <vector>
 #include "headers/handle-input.hpp"
 #include "headers/process.hpp"
 #include "headers/hashtable.hpp"
-#include "headers/hashtable.hpp"
 #include "headers/search.hpp"
+#include "headers/manhattan-hashing.hpp"
 using namespace std;
+
+
 #include <iostream>
 
 unsigned char** all_images = NULL;
 unsigned char** query_images = NULL;
+unsigned int w;
 
 int main(int argc, char **argv) {
     uint32_t number_of_images = 0;
@@ -19,7 +21,7 @@ int main(int argc, char **argv) {
     int k = SMALL_K;
 	int l = SMALL_L;
 	int n = SMALL_N;
-	double r = SMALL_R;
+	unsigned int r = SMALL_R;
     string output_file, query_file;
     vector<pair<unsigned int, unsigned int> > ANN, RSNN, BNN;
     
@@ -27,6 +29,9 @@ int main(int argc, char **argv) {
 
     do {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
+        // This give big values for w
+        // calculateW_Component(d, number_of_images, number_of_query_images);
+        w = 400;
         process(number_of_images, d, k, l, n, r);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
@@ -34,7 +39,8 @@ int main(int argc, char **argv) {
             for (unsigned int i =0;i<ANN.size();i++) {
                 cout<<"ANN neighbour: " << ANN[i].first << " val: " << ANN[i].second <<endl;
             }
-            RSNN = rangeSearch(d, k, n, l, q_num, 31111111, number_of_images, number_of_query_images);
+            cout<<"=============================="<<endl;
+            RSNN = rangeSearch(d, k, n, l, q_num, r, number_of_images, number_of_query_images);
             for (unsigned int i =0;i<RSNN.size();i++) {
                 cout<<"RSNN neighbour: "<<RSNN[i].first << " val: " << RSNN[i].second<<endl;
             }

@@ -1,9 +1,7 @@
-// Find sum of Manhattan 
-// distances between all the pairs of 
-// given points 
 #include <algorithm>
 #include <stdint.h>
 using namespace std;
+
 // Return the sum of distance of one axis.
 unsigned int distanceSum(unsigned int* arr, uint64_t n) { 
     sort(arr, arr + n); 
@@ -15,7 +13,10 @@ unsigned int distanceSum(unsigned int* arr, uint64_t n) {
     }
     return res; 
 } 
-  
+
+// Find sum of Manhattan 
+// distances between all the pairs of 
+// given points 
 unsigned int manhattanDistance(unsigned int* x, unsigned int* y, uint64_t n) {
     return distanceSum(x, n) + distanceSum(y, n);
 }
