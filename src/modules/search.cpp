@@ -105,7 +105,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
 
 
 // searches using range search
-vector<pair <unsigned int, unsigned int> > rangeSearch (uint64_t d, int k, int n, int L, uint32_t q_num, unsigned int radius,int number_of_images, int number_of_query_images) {
+vector<pair <unsigned int, unsigned int> > rangeSearch(uint64_t d, int k, int n, int L, uint32_t q_num, unsigned int radius,int number_of_images, int number_of_query_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_gp = 0;
@@ -137,6 +137,7 @@ vector<pair <unsigned int, unsigned int> > rangeSearch (uint64_t d, int k, int n
                 // search if there is already inside
                 // using lambda function
                 unsigned int temp = HashTables[l][pos_in_hash][h];
+                cout<<"Range : "<<temp<<current_distance<<endl;
                 it = find_if(
                     n_neighbours.begin(),
                     n_neighbours.end(),
@@ -147,11 +148,11 @@ vector<pair <unsigned int, unsigned int> > rangeSearch (uint64_t d, int k, int n
                     n_neighbours.push_back(make_pair(temp, current_distance));
                 }
             }
-            // take into account a maximum of (10 * L) points in each hashtable
-            if (h > static_cast<unsigned int>(10*L)) {
-                // break the loop to continue with next hashtable
-                break;
-            }
+            // // take into account a maximum of (10 * L) points in each hashtable
+            // if (h > static_cast<unsigned int>(10*L)) {
+            //     // break the loop to continue with next hashtable
+            //     break;
+            // }
         }
     }
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
