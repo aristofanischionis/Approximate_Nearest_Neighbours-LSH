@@ -8,10 +8,10 @@
 #include "../headers/hashtable.hpp"
 using namespace std;
 
-unsigned int* convertArray(unsigned char* array, int size) {
-    unsigned int *result_array = new unsigned int [size];
+int* convertArray(unsigned char* array, int size) {
+    int *result_array = new int [size];
     for (int i = 0; i < size;i++) {
-        result_array[i] = static_cast<unsigned int>(array[i]);
+        result_array[i] = static_cast<int>(array[i]);
     }
     return result_array;
 }
@@ -30,7 +30,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (uint64_t d, int k, 
     int pos_in_hash = 0;
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
-    unsigned int* qarray, *parray;
+    int* qarray, *parray;
     // for all hash_tables
     for (int l = 0; l < L; l++) {
         // calculating g(q)
@@ -74,7 +74,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int min_distance = inf;
     unsigned int current_distance = 0;
-    unsigned int* qarray, *parray;
+    int* qarray, *parray;
     // loop over the images array
     for (int i=0; i<number_of_images; i++) {
         qarray = convertArray(query_images[q_num], d);
@@ -113,7 +113,7 @@ vector<pair <unsigned int, unsigned int> > rangeSearch (uint64_t d, int k, int n
     int pos_in_hash = 0;
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
-    unsigned int* qarray, *parray;
+    int* qarray, *parray;
     // for all hash_tables
     for (int l = 0; l < L; l++) {
         // calculating g(q)

@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
         // This give big values for w
         // calculateW_Component(d, number_of_images, number_of_query_images);
         w = 400;
-            unsigned int* qarray, *parray;
+            int* qarray, *parray;
             qarray = convertArray(query_images[0], d);
             parray = convertArray(all_images[0], d);
             cout<<manhattanDistance(qarray, parray, d)<<endl;

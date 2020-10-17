@@ -8,7 +8,7 @@
 using namespace std;
 
 void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number_of_query_images) {
-	unsigned int* qarray, *parray;
+	int* qarray, *parray;
 	vector <unsigned int> distances;
 	// pick a ramdom query image
 	int randNum = rand()%number_of_query_images;
