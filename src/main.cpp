@@ -26,28 +26,18 @@ int main(int argc, char **argv) {
     vector<pair<unsigned int, unsigned int> > ANN, RSNN, BNN;
     
     handleInput(argc, argv, &number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
-
     do {
+        cout<<"BAZO hash"<<endl;
+        // Process input data and insert into hash_tables
+        process(number_of_images, d, k, l, n, r);
+        cout<<"TELOS HASH"<<endl;
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         // This give big values for w
         w = 400;
-        calculateW_Component(d, number_of_images, number_of_query_images);
-        cout<<w<<endl;
-            // int* qarray, *parray;
-            // qarray = convertArray(query_images[0], d);
-            // parray = convertArray(all_images[0], d);
-            // for(uint64_t i = 0; i<d;i++){
-            //     cout<<qarray[i]<<endl;
-            // }
-            // cout<<"==============================="<<endl;
-            // for(uint64_t i = 0; i<d;i++){
-            //     cout<<parray[i]<<endl;
-            // }
-            // cout<<manhattanDistance(qarray, parray, d)<<endl;
-        process(number_of_images, d, k, l, n, r);
+        // calculateW_Component(d, number_of_images, number_of_query_images);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);
-            // BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images, number_of_query_images);
+            BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images, number_of_query_images);
             for (unsigned int i =0;i<ANN.size();i++) {
                 cout<<"ANN neighbour: " << ANN[i].first << " val: " << ANN[i].second <<endl;
             }

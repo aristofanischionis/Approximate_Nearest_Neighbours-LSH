@@ -137,7 +137,7 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(uint64_t d, int k, int n,
                 // search if there is already inside
                 // using lambda function
                 unsigned int temp = HashTables[l][pos_in_hash][h];
-                cout<<"Range : "<<temp<<current_distance<<endl;
+                cout<<"Range : "<<temp<<" Distance: "<<current_distance<<endl;
                 it = find_if(
                     n_neighbours.begin(),
                     n_neighbours.end(),
