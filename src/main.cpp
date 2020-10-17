@@ -1,6 +1,5 @@
 #include <vector>
 #include "headers/handle-input.hpp"
-#include "headers/process.hpp"
 #include "headers/hashtable.hpp"
 #include "headers/search.hpp"
 #include "headers/manhattan-hashing.hpp"
@@ -27,11 +26,11 @@ int main(int argc, char **argv) {
     
     handleInput(argc, argv, &number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
     do {
-        cout<<"BAZO hash"<<endl;
         // Process input data and insert into hash_tables
-        process(number_of_images, d, k, l, n, r);
+        initializeHashtables(l, number_of_images);
+        cout<<"BAZO hash"<<endl;
+        readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query, k, number_of_images, l);
         cout<<"TELOS HASH"<<endl;
-        readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query);
         // This give big values for w
         w = 400;
         // calculateW_Component(d, number_of_images, number_of_query_images);

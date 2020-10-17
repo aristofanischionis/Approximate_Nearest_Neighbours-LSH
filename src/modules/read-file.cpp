@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "../headers/handle-input.hpp"
+#include "../headers/hashtable.hpp"
 #include "../headers/manhattan-hashing.hpp"
 using namespace std;
 
@@ -34,14 +35,21 @@ void readImage(ifstream *file, unsigned char* image, uint64_t d) {
     }
 }
 
-void initializeImageArray(ifstream *file, int file_type, uint32_t image_number, uint64_t d) {
+void initializeImageArray(ifstream *file, int file_type, uint32_t image_number, uint64_t d, int k, uint32_t number_of_images, int L) {
     if (file_type == INPUT_FILE) {
+        unsigned int g_x = 0;
         // initialize the array of vector items (all_images) for input_data
         all_images = new unsigned char *[image_number];
         // loop over all images to read them
         for (uint32_t i = 0; i < image_number; i++) {
             all_images[i] = new unsigned char[d];
             readImage(file, all_images[i], d);
+            // insert this image in all hashtables
+            for (int l=0; l<L; l++) {
+                g_x = calculateG_X(k, d, i, INPUT_FILE);
+                // pass to hashtable
+                insertToHashtable(l, i, g_x, number_of_images);
+            }
         }
     } 
     else if (file_type == QUERY_FILE) {
@@ -76,7 +84,7 @@ void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint
 }
 
 // handling the input file
-void readFile(const string& filename, int file_type, uint32_t* image_number, uint64_t* d) {
+void readFile(const string& filename, int file_type, uint32_t* image_number, uint64_t* d, int k, uint32_t number_of_images, int L) {
     ifstream file;
     uint32_t magic_number = 0;
     uint32_t number_of_rows = 0;
@@ -91,6 +99,6 @@ void readFile(const string& filename, int file_type, uint32_t* image_number, uin
     // start reading from file
     getMeta(&file, magic_number, *image_number, number_of_rows, number_of_columns);
     *d = number_of_columns * number_of_rows;
-    initializeImageArray(&file, file_type, *image_number, *d);
+    initializeImageArray(&file, file_type, *image_number, *d, k, number_of_images, L);
     file.close();
 }

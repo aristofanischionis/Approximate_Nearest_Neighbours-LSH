@@ -18,5 +18,5 @@ extern unsigned char **query_images;
 
 void handleInput(int , char**, uint32_t*, uint64_t*, int*, int*, int*, unsigned int*, string*, string*);
 void handleReExecution(uint32_t*, uint64_t*, int*, int*, int*, unsigned int*, string*, string*);
-void readFile(const string&, int, uint32_t*, uint64_t*);
+void readFile(const string&, int, uint32_t*, uint64_t*, int, uint32_t, int);
 void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint64_t d);
