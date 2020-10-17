@@ -1,9 +1,9 @@
-HEADER = src/headers/handle-input.hpp src/headers/distances.hpp src/headers/manhattan-hashing.hpp src/headers/modulo.hpp src/headers/process.hpp src/headers/hashtable.hpp
-SOURCE =  src/main.cpp src/modules/manhattan-distance.cpp src/modules/handle-input.cpp src/modules/read-file.cpp src/modules/manhattan-hashing.cpp src/modules/modulo.cpp src/modules/process.cpp src/modules/hashtable.cpp
-OBJS = main.o manhattan-distance.o handle-input.o read-file.o manhattan-hashing.o modulo.o process.o hashtable.o
+HEADER = src/headers/handle-input.hpp src/headers/distances.hpp src/headers/manhattan-hashing.hpp src/headers/modulo.hpp src/headers/hashtable.hpp src/headers/search.hpp
+SOURCE =  src/main.cpp src/modules/manhattan-distance.cpp src/modules/handle-input.cpp src/modules/read-file.cpp src/modules/manhattan-hashing.cpp src/modules/modulo.cpp src/modules/hashtable.cpp src/modules/search.cpp
+OBJS = main.o manhattan-distance.o handle-input.o read-file.o manhattan-hashing.o modulo.o hashtable.o search.o
 
 CXX = g++
-FLAGS = -g -c -Wall
+FLAGS = -std=c++11 -g -c -Wall
 OUT = lsh
 
 all: $(OUT)
@@ -29,11 +29,11 @@ manhattan-hashing.o : src/modules/manhattan-hashing.cpp
 modulo.o : src/modules/modulo.cpp
 	$(CXX) $(FLAGS) src/modules/modulo.cpp
 
-process.o : src/modules/process.cpp
-	$(CXX) $(FLAGS) src/modules/process.cpp
-
 hashtable.o : src/modules/hashtable.cpp
 	$(CXX) $(FLAGS) src/modules/hashtable.cpp
+
+search.o : src/modules/search.cpp
+	$(CXX) $(FLAGS) src/modules/search.cpp
 
 clean:
 	rm -f $(OBJS) $(OUT)
