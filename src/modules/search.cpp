@@ -137,7 +137,6 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(uint64_t d, int k, int n,
                 // search if there is already inside
                 // using lambda function
                 unsigned int temp = HashTables[l][pos_in_hash][h];
-                cout<<"Range : "<<temp<<" Distance: "<<current_distance<<endl;
                 it = find_if(
                     n_neighbours.begin(),
                     n_neighbours.end(),
@@ -148,11 +147,11 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(uint64_t d, int k, int n,
                     n_neighbours.push_back(make_pair(temp, current_distance));
                 }
             }
-            // // take into account a maximum of (10 * L) points in each hashtable
-            // if (h > static_cast<unsigned int>(10*L)) {
-            //     // break the loop to continue with next hashtable
-            //     break;
-            // }
+            // take into account a maximum of (10 * L) points in each hashtable
+            if (h > static_cast<unsigned int>(10*L)) {
+                // break the loop to continue with next hashtable
+                break;
+            }
         }
     }
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
