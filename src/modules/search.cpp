@@ -24,7 +24,7 @@ unsigned int* convertArray(unsigned char* array, int size) {
 // q_num: is an index of the query to search in the query_images[]
 vector<pair <unsigned int, unsigned int> > approximateN_NNs (uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images, int number_of_query_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
-    unsigned int min_distance = m;
+    unsigned int min_distance = inf;
     unsigned int current_gp = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
@@ -72,7 +72,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (uint64_t d, int k, 
 vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images, int number_of_query_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     vector<pair <unsigned int, unsigned int> >::iterator it;
-    unsigned int min_distance = m;
+    unsigned int min_distance = inf;
     unsigned int current_distance = 0;
     unsigned int* qarray, *parray;
     // loop over the images array

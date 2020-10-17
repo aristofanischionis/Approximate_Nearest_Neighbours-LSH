@@ -6,7 +6,7 @@
 #include "headers/manhattan-hashing.hpp"
 using namespace std;
 
-
+#include "headers/distances.hpp"
 #include <iostream>
 
 unsigned char** all_images = NULL;
@@ -32,6 +32,10 @@ int main(int argc, char **argv) {
         // This give big values for w
         // calculateW_Component(d, number_of_images, number_of_query_images);
         w = 400;
+            unsigned int* qarray, *parray;
+            qarray = convertArray(query_images[0], d);
+            parray = convertArray(all_images[0], d);
+            cout<<manhattanDistance(qarray, parray, d)<<endl;
         process(number_of_images, d, k, l, n, r);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             ANN = approximateN_NNs(d, k, n, l, q_num, number_of_images, number_of_query_images);

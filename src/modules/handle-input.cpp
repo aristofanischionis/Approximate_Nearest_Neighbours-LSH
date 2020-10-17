@@ -7,6 +7,7 @@
 using namespace std;
 
 unsigned int M;
+unsigned int m;
 
 void handleReExecution (
 	uint32_t *number_of_images, 
@@ -90,6 +91,7 @@ void handleReExecution (
 	}
 	// M as given from theory
 	M = pow(2, 32/(*k));
+	m = M/2 - 1;
 	readFile(input_file, INPUT_FILE, number_of_images, d);
 }
 
@@ -149,6 +151,7 @@ void handleInput(
 	}
 	// M as given from theory
 	M = pow(2, 32/(*k));
+	m = M/2 - 1;
 	// read data from the input_file 
 	readFile(input_file, INPUT_FILE, number_of_images, d);
 	// returning these values to main to continue execution

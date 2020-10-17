@@ -2,21 +2,10 @@
 #include <stdint.h>
 using namespace std;
 
-// Return the sum of distance of one axis.
-unsigned int distanceSum(unsigned int* arr, uint64_t n) { 
-    sort(arr, arr + n); 
-    // For each point, finding the distance. 
-    int res = 0, sum = 0; 
-    for (uint64_t i = 0; i < n; i++) { 
-        res += (arr[i] * i - sum); 
-        sum += arr[i]; 
-    }
-    return res; 
-} 
-
-// Find sum of Manhattan 
-// distances between all the pairs of 
-// given points 
 unsigned int manhattanDistance(unsigned int* x, unsigned int* y, uint64_t n) {
-    return distanceSum(x, n) + distanceSum(y, n);
+	unsigned int sum =0;
+    for (uint64_t i = 0; i < n; i++) {
+        sum += abs(static_cast<int>(x[i]) - static_cast<int>(y[i])); 
+    }
+    return sum;
 }

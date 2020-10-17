@@ -19,5 +19,4 @@ void process (uint32_t number_of_images, uint64_t d, int k, int L, int n, unsign
             insertToHashtable(l, image, g_x, number_of_images);
         }
     }
-    // printHashtable(L, number_of_images);
 }
