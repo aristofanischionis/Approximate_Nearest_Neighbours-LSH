@@ -99,7 +99,7 @@ int createH_X (uint64_t d, int image, int file_type) {
 // Calculate g(x) using bitwise operations
 unsigned int calculateG_X (int k, int d, uint32_t image, int file_type) {
 	int h_x;
-	unsigned int g_x;
+	unsigned int g_x = 0;
     // That is the max number of bits of the h(x)
     int shift = 32/k;
 	for (int i=0; i<k; i++) {

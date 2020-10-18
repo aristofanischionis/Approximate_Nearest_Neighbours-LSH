@@ -6,12 +6,12 @@ using namespace std;
 
 vector<vector<vector<unsigned int> > > HashTables;
 
-void initializeHashtables(unsigned int L, uint32_t n) {
+void initializeHashtables(int L, uint32_t n) {
 	int hashtable_size = n/HASHTABLE_NUMBER;
     HashTables.resize(L, vector<vector<unsigned int> >(hashtable_size,vector<unsigned int>(0)));
 }
 
-void insertToHashtable(unsigned int L, uint32_t image, unsigned int g_x, uint32_t n) {
+void insertToHashtable(int L, uint32_t image, unsigned int g_x, uint32_t n) {
 	int hashtable_size = n/HASHTABLE_NUMBER;
 	unsigned long pos = customModulo(g_x, hashtable_size);
 	HashTables[L][pos].push_back(static_cast<unsigned int>(image));
