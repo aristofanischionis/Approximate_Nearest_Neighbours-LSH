@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/distances.hpp"
 #include "../headers/handle-input.hpp"
@@ -33,6 +34,8 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
     int* qarray, *parray;
+
+    auto startLSH = chrono::high_resolution_clock::now();
     // for all hash_tables
     for (int l = 0; l < L; l++) {
         // calculating g(q)
@@ -64,18 +67,27 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
         }
         // finished with this hash table
     }
+    auto finishLSH = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedLSH = finishLSH - startLSH;
+
     reverse(n_neighbours.begin(), n_neighbours.end());
     if (n_neighbours.size() > static_cast<unsigned int>(n)) n_neighbours.resize(n);
-
     // write in output file
     vector<pair<unsigned int, unsigned int> > BNN;
+
+    auto startTrue = chrono::high_resolution_clock::now();
     BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images);
-    (*file) << "Query: " << q_num << endl;
-    for (int i = 0; i < n_neighbours.size(); i++){
-        (*file) << "Nearest neighbour-" << i << ": " << n_neighbours[i].first << endl;
+    auto finishTrue = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
+
+    (*file) << "Query:" << q_num << endl;
+    for (unsigned int i = 0; i < n_neighbours.size(); i++){
+        (*file) << "Nearest neighbour-" << i+1 << ": " << n_neighbours[i].first << endl;
         (*file) << "distanceLSH: " << n_neighbours[i].second << endl;
         (*file) << "distanceTrue: " << BNN[i].second << endl;
     }
+    (*file) << "tLSH: " << elapsedLSH.count() << endl;
+    (*file) << "tTrue: " << elapsedTrue.count() << endl;
     BNN.clear();
     return n_neighbours;
 }
@@ -104,7 +116,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
 
 
 // searches using range search
-vector<pair <unsigned int, unsigned int> > rangeSearch(uint64_t d, int k, int n, int L, uint32_t q_num, unsigned int radius,int number_of_images, int number_of_query_images) {
+vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius,int number_of_images, int number_of_query_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_gp = 0;
@@ -156,6 +168,10 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(uint64_t d, int k, int n,
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
         return left.second < right.second;
     });
-    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
+
+    (*file) << "R-near neighbours:" << n_neighbours.size() << endl;
+    for (unsigned int i=0; i<n_neighbours.size(); i++) {
+        (*file) << n_neighbours[i].first << endl;
+    }
     return n_neighbours;
 }

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query, k, l);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             ANN = approximateN_NNs(&o_file, d, k, n, l, q_num, number_of_images, number_of_query_images);
-            RSNN = rangeSearch(d, k, n, l, q_num, r, number_of_images, number_of_query_images);
+            RSNN = rangeSearch(&o_file, d, k, l, q_num, r, number_of_images, number_of_query_images);
             // for (unsigned int i =0;i<ANN.size();i++) {
             //     cout<<"ANN neighbour: " << ANN[i].first << " val: " << ANN[i].second <<endl;
             // }
