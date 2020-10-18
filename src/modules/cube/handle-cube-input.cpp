@@ -3,6 +3,8 @@
 #include <sstream>
 #include <cmath>
 #include "../../headers/cube/handle-cube-input.hpp"
+#include "../../headers/cube/read-cube-file.hpp"
+
 using namespace std;
 
 unsigned int M;
@@ -98,7 +100,7 @@ void handleReExecution (
 	// M as given from theory
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
-	// readFile(input_file, INPUT_FILE, number_of_images, d, *k, *l);
+	readCubeFile(input_file, INPUT_FILE, number_of_images, d, *k);
 }
 
 void handleInput(
@@ -161,6 +163,6 @@ void handleInput(
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
 	// read data from the input_file 
-	// readFile(input_file, INPUT_FILE, number_of_images, d, *k, *l);
+	readCubeFile(input_file, INPUT_FILE, number_of_images, d, *k);
 	// returning these values to main to continue execution
 }

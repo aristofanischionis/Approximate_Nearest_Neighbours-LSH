@@ -18,4 +18,6 @@ extern unsigned char **query_images;
 void handleInput(int , char**, uint32_t*, uint64_t*, int*, int*, int*, unsigned int*, string*, string*);
 void handleReExecution(uint32_t*, uint64_t*, int*, int*, int*, unsigned int*, string*, string*);
 void readFile(const string&, int, uint32_t*, uint64_t*, int, int);
-void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint64_t d);
+void printFiles(uint32_t, uint32_t, uint64_t);
+void getMeta(ifstream *, uint32_t &, uint32_t &, uint32_t &, uint32_t &);
+void readImage(ifstream *, unsigned char *, uint64_t);

@@ -3,8 +3,10 @@
 #include <fstream>
 using namespace std;
 
-unsigned char** all_images = NULL;
-unsigned char** query_images = NULL;
+// I use these arrays from this header "headers/handle-input.hpp"
+//  I think it's okay to do so, because I have to include it anyway to use other functions from there
+// unsigned char** all_images = NULL;
+// unsigned char** query_images = NULL;
 unsigned int w;
 
 int main(int argc, char **argv) {
