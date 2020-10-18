@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <string>
 #define INPUT_FILE 0
 #define QUERY_FILE 1
 #define SUCCESS 0

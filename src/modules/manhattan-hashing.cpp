@@ -40,7 +40,7 @@ void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number
 	w = sum / (50*number_of_images);
 }
 
-float calculateS_IComponent(uint64_t d) {
+float calculateS_IComponent() {
 	float s_i;
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, (float) w);
@@ -57,7 +57,7 @@ int calculateA_IComponent(float p_i, uint64_t d) {
 	int a_i;
 	float s_i;
 	// calculate s_i
-	s_i = calculateS_IComponent(d);
+	s_i = calculateS_IComponent();
 	// ADD w, to all p_i, this will move all of the p_i s away from the start of axis
 	// Will remove the problem of having negative numbers in the a_i components!
 	sub = p_i + w - s_i;
