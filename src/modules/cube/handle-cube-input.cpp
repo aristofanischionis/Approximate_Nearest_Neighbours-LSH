@@ -8,8 +8,6 @@
 
 using namespace std;
 
-unsigned int M;
-unsigned int m;
 int d_space;
 
 void handleCubeReExecution (

@@ -13,11 +13,11 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
         string cube_g_x;
         int d_space;
         // initialize the array of vector items (all_images) for input_data
-        all_images = new unsigned char *[number_of_images];
+        all_cube_images = new unsigned char *[number_of_images];
         // loop over all images to read them
         for (uint32_t i = 0; i < number_of_images; i++) {
-            all_images[i] = new unsigned char[d];
-            readImage(file, all_images[i], d);
+            all_cube_images[i] = new unsigned char[d];
+            readImage(file, all_cube_images[i], d);
             d_space = calculateLogDspace(d);
             // insert this image in hypercube
             cube_g_x = calculateCubeG_X(d_space, i, INPUT_FILE);
@@ -27,11 +27,11 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
     } 
     else if (file_type == QUERY_FILE) {
         // initialize the array for the query dataset
-        query_images = new unsigned char *[number_of_images];
+        query_cube_images = new unsigned char *[number_of_images];
         // loop over all images to read them
         for (uint32_t i = 0; i < number_of_images; i++) {
-            query_images[i] = new unsigned char[d];
-            readImage(file, query_images[i], d);
+            query_cube_images[i] = new unsigned char[d];
+            readImage(file, query_cube_images[i], d);
         }
     }
 }
