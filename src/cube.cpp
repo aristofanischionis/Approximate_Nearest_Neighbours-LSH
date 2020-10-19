@@ -1,3 +1,4 @@
+#include "headers/cube/cube.hpp"
 #include "headers/cube/projection.hpp"
 #include "headers/cube/handle-cube-input.hpp"
 #include <fstream>
@@ -5,8 +6,8 @@ using namespace std;
 
 // I use these arrays from this header "headers/handle-input.hpp"
 //  I think it's okay to do so, because I have to include it anyway to use other functions from there
-// unsigned char** all_images = NULL;
-// unsigned char** query_images = NULL;
+unsigned char** all_images = NULL;
+unsigned char** query_images = NULL;
 unsigned int w;
 
 int main(int argc, char **argv) {
@@ -17,8 +18,10 @@ int main(int argc, char **argv) {
 	int probes = PROBES;
 	unsigned int r = SMALL_R;
     uint64_t d = 0;
+    w = 400;
     string output_file, query_file;
     ofstream o_file;
 
-    handleInput(argc, argv, &number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
+    handleCubeInput(argc, argv, &number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
+    // TODO: FREE UP MEMORY
 }

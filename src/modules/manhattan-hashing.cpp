@@ -1,11 +1,20 @@
 #include <iostream>
 #include <random>
+#include "../headers/lsh.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/modulo.hpp"
 #include "../headers/search.hpp"
 #include "../headers/distances.hpp"
 using namespace std;
+
+int* convertArray(unsigned char* array, int size) {
+    int *result_array = new int [size];
+    for (int i = 0; i < size;i++) {
+        result_array[i] = static_cast<int>(array[i]);
+    }
+    return result_array;
+}
 
 void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number_of_query_images) {
 	// int* qarray, *parray;

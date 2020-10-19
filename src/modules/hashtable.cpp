@@ -1,5 +1,6 @@
 #include "../headers/hashtable.hpp"
 #include "../headers/modulo.hpp"
+#include "../headers/lsh.hpp"
 #include <iostream>
 
 using namespace std;

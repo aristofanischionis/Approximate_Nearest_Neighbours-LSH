@@ -5,6 +5,7 @@
 #include <bitset>
 #include <cmath>
 #include <unordered_map>
+#include "../../headers/cube/cube.hpp"
 #include "../../headers/manhattan-hashing.hpp"
 #include "../../headers/search.hpp"
 #include "../../headers/distances.hpp"
@@ -22,7 +23,7 @@ string distribute_Bits() {
 
 	// Generate a new int number
 	int result = static_cast<int>(distribution(generator));
-	string s = bitset< 64 >(result).to_string(); // string conversion
+	string s = bitset<1>(result).to_string(); // string conversion
 
 	return s;
 }
@@ -43,12 +44,9 @@ string calculateCubeG_X(int d_space, int image, int file_type) {
 			// it does not exists, so add it
 			projections[i][h_x] = bit; 
 		}
-		else {
-			bit = projections[i][h_x];
-		}
 		// now that we have f_i(h_i(p)) as a bit
 		// append it in bitstring
-		cubeG_X.append(bit);
+		cubeG_X.append(projections[i][h_x]);
 	}
 	return cubeG_X;
 }
@@ -59,5 +57,5 @@ void insertToHypercube () {
 }
 
 int calculateLogDspace(int d) {
-	return (log10(d) - 3);
+	return (int)(log10(d) - 3);
 }

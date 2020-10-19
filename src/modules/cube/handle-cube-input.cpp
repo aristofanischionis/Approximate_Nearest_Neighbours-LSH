@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include "../../headers/cube/cube.hpp"
 #include "../../headers/cube/handle-cube-input.hpp"
 #include "../../headers/cube/read-cube-file.hpp"
 
@@ -11,7 +12,7 @@ unsigned int M;
 unsigned int m;
 int d_space;
 
-void handleReExecution (
+void handleCubeReExecution (
 	uint32_t *number_of_images, 
 	uint64_t *d,
 	int *k,
@@ -103,7 +104,7 @@ void handleReExecution (
 	readCubeFile(input_file, INPUT_FILE, number_of_images, d, *k);
 }
 
-void handleInput(
+void handleCubeInput(
 	int argc, 
 	char **argv, 
 	uint32_t *number_of_images, 
@@ -117,13 +118,13 @@ void handleInput(
 	string *query_file
 	){
 	string input_file;
-	string param = argv[1];
 	// First we need to check for the least amount of arguments required
 	// Which are 7 since we need 3 files with their param and the executable
 	if (argc < 7) {
 		cerr << "You need to provide the path of the files" << endl;
 		exit(ERROR);
 	}	
+	string param = argv[1];
 
 	// get the path files
 	if (param != "-d") {

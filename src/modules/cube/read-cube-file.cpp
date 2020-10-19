@@ -3,6 +3,7 @@
 #include <string>
 #include "../../headers/handle-input.hpp"
 #include "../../headers/cube/projection.hpp"
+#include "../../headers/cube/cube.hpp"
 using namespace std;
 
 void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_images, uint64_t d, int k) {

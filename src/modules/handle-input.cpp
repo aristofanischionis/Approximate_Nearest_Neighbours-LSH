@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include "../headers/lsh.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/hashtable.hpp"
@@ -20,12 +21,12 @@ void handleReExecution (
 	string *output_file,
 	string *query_file
 	) {
-	
 	string input_file, param;
 	cout << "Please enter new parameters for the program to re-execute or press enter to exit" << endl;
 	string input;
 	char split_char = ' ';
 	getline(cin, input);
+	// TODO: FREE UP MEMORY
 	if (input.size() == 0)
 		exit(SUCCESS);
 	// Here the least amount of arguments are 6
@@ -109,14 +110,14 @@ void handleInput(
 	string *query_file
 	){
 	string input_file;
-	string param = argv[1];
 	// First we need to check for the least amount of arguments required
 	// Which are 7 since we need 3 files with their param and the executable
 	if (argc < 7) {
 		cerr << "You need to provide the path of the files" << endl;
 		exit(ERROR);
-	}	
+	}
 
+	string param = argv[1];
 	// get the path files
 	if (param != "-d") {
 		cerr << "You need to provide the input_file path" << endl;

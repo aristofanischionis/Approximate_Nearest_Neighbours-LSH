@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "headers/lsh.hpp"
 #include "headers/handle-input.hpp"
 #include "headers/search.hpp"
 #include "headers/manhattan-hashing.hpp"

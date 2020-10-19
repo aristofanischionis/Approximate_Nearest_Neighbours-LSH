@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
+#include "../headers/lsh.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/distances.hpp"
 #include "../headers/handle-input.hpp"
@@ -10,14 +11,6 @@
 #include "../headers/hashtable.hpp"
 #include "../headers/search.hpp"
 using namespace std;
-
-int* convertArray(unsigned char* array, int size) {
-    int *result_array = new int [size];
-    for (int i = 0; i < size;i++) {
-        result_array[i] = static_cast<int>(array[i]);
-    }
-    return result_array;
-}
 
 // two ways to find this
 // A. LSH

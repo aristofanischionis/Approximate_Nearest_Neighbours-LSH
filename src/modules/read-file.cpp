@@ -1,6 +1,7 @@
 // Function to read binary files
 #include <iostream>
 #include <fstream>
+#include "../headers/lsh.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/hashtable.hpp"
 #include "../headers/manhattan-hashing.hpp"
