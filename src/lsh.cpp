@@ -1,15 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "headers/lsh.hpp"
+#include "headers/common.hpp"
 #include "headers/handle-input.hpp"
 #include "headers/search.hpp"
-#include "headers/manhattan-hashing.hpp"
 #include "headers/hashtable.hpp"
 using namespace std;
-
-unsigned char** all_images = NULL;
-unsigned char** query_images = NULL;
-unsigned int w;
 
 int main(int argc, char **argv) {
     uint32_t number_of_images = 0;

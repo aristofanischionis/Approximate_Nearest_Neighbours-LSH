@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
-#include "../headers/lsh.hpp"
+#include "../headers/common.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/hashtable.hpp"
@@ -10,6 +10,9 @@ using namespace std;
 
 unsigned int M;
 unsigned int m;
+unsigned char** all_images = NULL;
+unsigned char** query_images = NULL;
+unsigned int w;
 
 void handleReExecution (
 	uint32_t *number_of_images, 

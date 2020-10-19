@@ -1,4 +1,3 @@
-#include <vector>
 // uint32_t undefined reference.
 #include <stdint.h>
 

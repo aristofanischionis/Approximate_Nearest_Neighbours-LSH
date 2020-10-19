@@ -1,5 +1,3 @@
-#include "../headers/modulo.hpp"
-
 // Calculate the m^x%M for x = [0,d-1]
 unsigned long long exponentiationModulo(unsigned int x, unsigned int y, unsigned int p) {
 	// Initialize result

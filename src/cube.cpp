@@ -1,14 +1,8 @@
-#include "headers/cube/cube.hpp"
+#include "headers/common.hpp"
 #include "headers/cube/projection.hpp"
 #include "headers/cube/handle-cube-input.hpp"
 #include <fstream>
 using namespace std;
-
-// I use these arrays from this header "headers/handle-input.hpp"
-//  I think it's okay to do so, because I have to include it anyway to use other functions from there
-unsigned char** all_cube_images = NULL;
-unsigned char** query_cube_images = NULL;
-unsigned int w;
 
 int main(int argc, char **argv) {
     uint32_t number_of_images = 0;

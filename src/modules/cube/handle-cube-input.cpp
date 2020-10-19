@@ -2,13 +2,18 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
-#include "../../headers/cube/cube.hpp"
+#include <unordered_map>
+#include "../../headers/common.hpp"
 #include "../../headers/cube/handle-cube-input.hpp"
 #include "../../headers/cube/read-cube-file.hpp"
 
 using namespace std;
 
 int d_space;
+unsigned char** all_cube_images = NULL;
+unsigned char** query_cube_images = NULL;
+// it takes h_i(p) and bitstring (bucket in Hypercube)
+vector<unordered_map<int, string> > projections;
 
 void handleCubeReExecution (
 	uint32_t *number_of_images, 
@@ -161,7 +166,7 @@ void handleCubeInput(
 	// M as given from theory
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
-	// read data from the input_file 
+	// read data from the input_file
 	readCubeFile(input_file, INPUT_FILE, number_of_images, d, *k);
 	// returning these values to main to continue execution
 }

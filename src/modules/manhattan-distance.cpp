@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <stdint.h>
-#include "../headers/lsh.hpp"
 using namespace std;
 
 unsigned int manhattanDistance(int* x, int* y, uint64_t n) {

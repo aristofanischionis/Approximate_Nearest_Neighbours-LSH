@@ -3,15 +3,35 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-#include "../headers/lsh.hpp"
+#include "../headers/common.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/distances.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/modulo.hpp"
 #include "../headers/hashtable.hpp"
-#include "../headers/search.hpp"
 using namespace std;
 
+// Brute Force
+vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images) {
+    vector<pair <unsigned int, unsigned int> > n_neighbours;
+    vector<pair <unsigned int, unsigned int> >::iterator it;
+    unsigned int current_distance = 0;
+    int* qarray, *parray;
+    // loop over the images array
+    for (int i=0; i<number_of_images; i++) {
+        qarray = convertArray(query_images[q_num], d);
+        parray = convertArray(all_images[i], d);
+        current_distance = manhattanDistance(qarray, parray, d);
+        delete[] qarray;
+        delete[] parray; 
+        n_neighbours.push_back(make_pair(i, current_distance));
+    }
+    sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
+        return left.second < right.second;
+    });
+    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
+    return n_neighbours;
+}
 // two ways to find this
 // A. LSH
 // B. True (brute force)
@@ -84,29 +104,6 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
     BNN.clear();
     return n_neighbours;
 }
-
-// Brute Force
-vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t d, int n, uint32_t q_num, int number_of_images) {
-    vector<pair <unsigned int, unsigned int> > n_neighbours;
-    vector<pair <unsigned int, unsigned int> >::iterator it;
-    unsigned int current_distance = 0;
-    int* qarray, *parray;
-    // loop over the images array
-    for (int i=0; i<number_of_images; i++) {
-        qarray = convertArray(query_images[q_num], d);
-        parray = convertArray(all_images[i], d);
-        current_distance = manhattanDistance(qarray, parray, d);
-        delete[] qarray;
-        delete[] parray; 
-        n_neighbours.push_back(make_pair(i, current_distance));
-    }
-    sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
-        return left.second < right.second;
-    });
-    if (n_neighbours.size() >  static_cast<unsigned int>(n)) n_neighbours.resize(n);
-    return n_neighbours;
-}
-
 
 // searches using range search
 vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius,int number_of_images, int number_of_query_images) {

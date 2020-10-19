@@ -2,8 +2,9 @@
 #include <fstream>
 #include <string>
 #include "../../headers/handle-input.hpp"
+#include "../../headers/common.hpp"
 #include "../../headers/cube/projection.hpp"
-#include "../../headers/cube/cube.hpp"
+#include "../../headers/cube/handle-cube-input.hpp"
 using namespace std;
 
 void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_images, uint64_t d, int k) {
@@ -12,15 +13,18 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
         // it is wrong to return <int>, find where is the best to store it ? maybe bitstring?
         string cube_g_x;
         int d_space;
+        d_space = calculateLogDspace(d);
+        projections.resize(d_space);
+        cout << "D-space is: " << d_space << endl;
         // initialize the array of vector items (all_images) for input_data
         all_cube_images = new unsigned char *[number_of_images];
         // loop over all images to read them
         for (uint32_t i = 0; i < number_of_images; i++) {
             all_cube_images[i] = new unsigned char[d];
             readImage(file, all_cube_images[i], d);
-            d_space = calculateLogDspace(d);
             // insert this image in hypercube
             cube_g_x = calculateCubeG_X(d_space, i, INPUT_FILE);
+            // cout << "cube_g_x is: " << cube_g_x << endl;
             // pass to hypercube
             insertToHypercube();
         }

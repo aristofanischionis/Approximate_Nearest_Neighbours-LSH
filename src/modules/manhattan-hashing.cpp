@@ -1,6 +1,6 @@
 #include <iostream>
 #include <random>
-#include "../headers/lsh.hpp"
+#include "../headers/common.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/modulo.hpp"

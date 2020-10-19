@@ -4,18 +4,11 @@
 #include <string>
 #include <bitset>
 #include <cmath>
-#include <unordered_map>
-#include "../../headers/cube/cube.hpp"
+#include "../../headers/cube/handle-cube-input.hpp"
 #include "../../headers/manhattan-hashing.hpp"
-#include "../../headers/search.hpp"
-#include "../../headers/distances.hpp"
-#include "../../headers/modulo.hpp"
-// #include "../../headers/cube/projection.hpp"
 
 using namespace std;
-
-// it takes h_i(p) and bitstring (bucket in Hypercube)
-vector<unordered_map<int, string> > projections;
+#include <iostream>
 
 string distribute_Bits() {
 	random_device generator;
@@ -32,9 +25,7 @@ string calculateCubeG_X(int d_space, int image, int file_type) {
 	int h_x;
 	string bit;
 	string cubeG_X;
-	// string
 	// why resize every time?
-	projections.resize(d_space);
 	for (int i=0; i<d_space; i++) {
 		h_x = createH_X(d_space, image, file_type);
 		// check if h_x exists in current f
@@ -42,7 +33,8 @@ string calculateCubeG_X(int d_space, int image, int file_type) {
 		if (projections[i].find(h_x) == projections[i].end()) {
 			bit = distribute_Bits();
 			// it does not exists, so add it
-			projections[i][h_x] = bit; 
+			projections[i][h_x] = bit;
+			cout << "projectionssssssss: " << projections[i][h_x] << endl;
 		}
 		// now that we have f_i(h_i(p)) as a bit
 		// append it in bitstring
@@ -57,5 +49,5 @@ void insertToHypercube () {
 }
 
 int calculateLogDspace(int d) {
-	return (int)(log10(d) - 3);
+	return (int)(log(d) - 1);
 }
