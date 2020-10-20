@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cmath>
 #include <unordered_map>
+#include <bitset>
 #include "../../headers/common.hpp"
 #include "../../headers/cube/handle-cube-input.hpp"
 #include "../../headers/cube/read-cube-file.hpp"
@@ -13,7 +14,7 @@ int d_space;
 unsigned char** all_cube_images = NULL;
 unsigned char** query_cube_images = NULL;
 // it takes h_i(p) and bitstring (bucket in Hypercube)
-vector<unordered_map<int, string> > projections;
+vector<unordered_map<int, int> > projections;
 multimap <std::string, int> Hypercube;
 
 void handleCubeReExecution (

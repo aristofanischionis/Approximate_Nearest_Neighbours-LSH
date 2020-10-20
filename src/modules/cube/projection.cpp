@@ -11,14 +11,14 @@
 using namespace std;
 #include <iostream>
 
-string distribute_Bits() {
+int distribute_Bits() {
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, 2.0);
 
 	// Generate a new int number
 	int result = static_cast<int>(distribution(generator));
 	
-	return bitset<1>(result).to_string();
+	return result;
 }
 
 // Calculate h(x) using the formula from the theory
@@ -30,11 +30,26 @@ int create_CubeH_X(uint64_t d, int image, int file_type) {
     return hx;
 }
 
+string decimalToBinary(int n) { 
+    //finding the binary form of the number and  
+    //converting it to string.  
+    string s = bitset<32> (n).to_string();
+      
+    //Finding the first occurance of "1" 
+    //to strip off the leading zeroes. 
+    const auto loc1 = s.find('1');
+
+    if(loc1 != string::npos)
+    	return s.substr(loc1);
+    
+    return "0";
+} 
+
 string calculateCubeG_X(int d, int image, int file_type) {
 	int h_x;
-	string bit;
-	string cubeG_X;
-	// why resize every time?
+	int bit;
+	int shift = 1;
+	int cubeG_X = 0;
 	for (int i=0; i<d_space; i++) {
 		h_x = create_CubeH_X(d, image, file_type);
 		// check if h_x exists in current f
@@ -45,9 +60,17 @@ string calculateCubeG_X(int d, int image, int file_type) {
 		}
 		// now that we have f_i(h_i(p)) as a bit
 		// append it in bitstring
-		cubeG_X.append(projections[i][h_x]);
+		if (i == 0) {
+			// if bit is set
+			// then just shift
+			cubeG_X = projections[i][h_x];
+		}
+		else{
+			cubeG_X <<= shift;
+			cubeG_X |= projections[i][h_x];
+		}
 	}
-	return cubeG_X;
+	return decimalToBinary(cubeG_X);
 }
 
 // print array of f(d')
@@ -67,9 +90,8 @@ void insertToHypercube(string g_x, int image) {
 // print Hypercube
 void printHypercube() {
 	multimap <string, int> :: iterator itr;
-	for (itr = Hypercube.begin(); itr != Hypercube.end(); ++itr) {
+	for (itr = Hypercube.begin(); itr != Hypercube.end(); ++itr)
         cout<< itr->first<<'\t'<< itr->second << endl;
-    } 
 }
 
 int calculateLogDspace(int d) {

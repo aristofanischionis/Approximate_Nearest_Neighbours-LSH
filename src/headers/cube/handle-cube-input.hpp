@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include <bitset>
 
 // define default values
 #define SMALL_CUBE_K 14
@@ -13,7 +14,7 @@ void handleCubeReExecution(uint32_t*, uint64_t*, int*, int*, int*, int*, unsigne
 void readCubeFile(const std::string&, int, uint32_t*, uint64_t*, int, int);
 
 extern int d_space;
-extern std::vector<std::unordered_map<int, std::string> > projections;
+extern std::vector<std::unordered_map<int, int> > projections;
 extern std::multimap <std::string, int> Hypercube;
 extern unsigned char **all_cube_images;
 extern unsigned char **query_cube_images;
