@@ -14,6 +14,7 @@ unsigned char** all_cube_images = NULL;
 unsigned char** query_cube_images = NULL;
 // it takes h_i(p) and bitstring (bucket in Hypercube)
 vector<unordered_map<int, string> > projections;
+multimap <std::string, int> Hypercube;
 
 void handleCubeReExecution (
 	uint32_t *number_of_images, 

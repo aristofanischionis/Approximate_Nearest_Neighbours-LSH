@@ -12,10 +12,8 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
         // Process input data and insert into hash_tables
         // it is wrong to return <int>, find where is the best to store it ? maybe bitstring?
         string cube_g_x;
-        int d_space;
         d_space = calculateLogDspace(d);
         projections.resize(d_space);
-        cout << "D-space is: " << d_space << endl;
         // initialize the array of vector items (all_images) for input_data
         all_cube_images = new unsigned char *[number_of_images];
         // loop over all images to read them
@@ -23,12 +21,11 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
             all_cube_images[i] = new unsigned char[d];
             readImage(file, all_cube_images[i], d);
             // insert this image in hypercube
-            cube_g_x = calculateCubeG_X(d_space, i, INPUT_FILE);
-            // cout << "cube_g_x is: " << cube_g_x << endl;
+            cube_g_x = calculateCubeG_X(d, i, INPUT_FILE);
             // pass to hypercube
-            insertToHypercube();
+            insertToHypercube(cube_g_x, (int)i);
         }
-    } 
+    }
     else if (file_type == QUERY_FILE) {
         // initialize the array for the query dataset
         query_cube_images = new unsigned char *[number_of_images];
