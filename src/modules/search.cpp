@@ -38,7 +38,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
 // takes a N from user 
 // calls approximateNN with the correct way (A or B)
 // q_num: is an index of the query to search in the query_images[]
-vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images, int number_of_query_images) {
+void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     unsigned int min_distance = inf;
     unsigned int current_gp = 0;
@@ -103,11 +103,11 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
     (*file) << "tLSH: " << elapsedLSH.count() << endl;
     (*file) << "tTrue: " << elapsedTrue.count() << endl;
     BNN.clear();
-    return n_neighbours;
+    n_neighbours.clear();
 }
 
 // searches using range search
-vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius, int number_of_images, int number_of_query_images) {
+void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius, int number_of_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_gp = 0;
@@ -164,5 +164,5 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t 
     for (unsigned int i=0; i<n_neighbours.size(); i++) {
         (*file) << n_neighbours[i].first << endl;
     }
-    return n_neighbours;
+    n_neighbours.clear();
 }

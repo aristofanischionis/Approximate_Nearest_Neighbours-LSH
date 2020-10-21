@@ -16,7 +16,6 @@ int main(int argc, char **argv) {
 	int n = SMALL_N;
 	unsigned int r = SMALL_R;
     string output_file, query_file;
-    vector<pair<unsigned int, unsigned int> > ANN, RSNN;
     ofstream o_file;
     // This give big values for w
     w = 400;
@@ -31,23 +30,21 @@ int main(int argc, char **argv) {
     do {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query, k, l);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
-            ANN = approximateN_NNs(&o_file, d, k, n, l, q_num, number_of_images, number_of_query_images);
-            RSNN = rangeSearch(&o_file, d, k, l, q_num, r, number_of_images, number_of_query_images);
-            ANN.clear();
-            RSNN.clear();
+            approximateN_NNs(&o_file, d, k, n, l, q_num, number_of_images);
+            rangeSearch(&o_file, d, k, l, q_num, r, number_of_images);
         }
         w = 400;
         // calculateW_Component(d, number_of_images, number_of_query_images);
         o_file.close();
-        handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
         // open output file
         o_file.open(output_file);
         if (!o_file.is_open()){
             cerr << "Output file can't be opened" << endl;
             exit(ERROR);
         }
+        handleReExecution(&number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
+        o_file.close();
     } while (true);
-    o_file.close();
     // DON'T FORGET TO FREE UP ALL USED SPACE
     // free up space for all_images
     // !!make function!!
