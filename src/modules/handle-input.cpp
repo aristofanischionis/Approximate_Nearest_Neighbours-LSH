@@ -67,7 +67,7 @@ void handleReExecution (
 			getline(token, param, split_char);
 			*output_file = param;
 		}
-		else if (param == "-d"){
+		else if (param == "-d") {
 			getline(token, param, split_char);
 			input_file = param;
 		}

@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     handleInput(argc, argv, &number_of_images, &d, &k, &l, &n, &r, &output_file, &query_file);
     // open output file
     o_file.open(output_file);
-    if (!o_file.is_open()){
+    if (!o_file.is_open()) {
         cerr << "Output file can't be opened" << endl;
         exit(ERROR);
     }

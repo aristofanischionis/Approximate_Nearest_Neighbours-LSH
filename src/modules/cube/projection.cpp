@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <vector>
 #include <random>
-#include <string>
 #include <bitset>
 #include <cmath>
 #include <chrono>
@@ -153,7 +152,7 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 			// checked some more
 			numberOfProbesToCheck--;
 			// now push back elements to allPossibleNeighbours
-			for (unsigned int el = 0; el < currentPossibleNeighbours.size(); el++){
+			for (unsigned int el = 0; el < currentPossibleNeighbours.size(); el++) {
 				allPossibleNeighbours.push_back(currentPossibleNeighbours[el]);
 				if(allPossibleNeighbours.size() == (unsigned int)maximumN) break;
 			}

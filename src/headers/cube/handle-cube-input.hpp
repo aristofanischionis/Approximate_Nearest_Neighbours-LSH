@@ -2,7 +2,6 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
-#include <bitset>
 
 // define default values
 #define SMALL_CUBE_K 14

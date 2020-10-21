@@ -3,7 +3,6 @@
 #include <sstream>
 #include <cmath>
 #include <unordered_map>
-#include <bitset>
 #include "../../headers/common.hpp"
 #include "../../headers/cube/handle-cube-input.hpp"
 #include "../../headers/cube/read-cube-file.hpp"
@@ -76,7 +75,7 @@ void handleCubeReExecution (
 			getline(token, param, split_char);
 			*output_file = param;
 		}
-		else if (param == "-d"){
+		else if (param == "-d") {
 			getline(token, param, split_char);
 			input_file = param;
 		}

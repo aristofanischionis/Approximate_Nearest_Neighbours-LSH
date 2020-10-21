@@ -68,7 +68,7 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
 
 void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint64_t d) {
     cout << "INPUT DATASET:" << endl;
-    for (uint32_t i = 0; i < number_of_images; i++){
+    for (uint32_t i = 0; i < number_of_images; i++) {
         cout << "next image" << endl;
         for (uint64_t j = 0; j < d; j++) {
             cout << static_cast<unsigned>(all_images[i][j]) << '\t';
@@ -76,8 +76,7 @@ void printFiles(uint32_t number_of_images, uint32_t number_of_query_images, uint
         cout << endl;
     }
     cout << "QUERY DATASET:" << endl;
-    for (uint32_t i = 0; i < number_of_query_images; i++)
-    {
+    for (uint32_t i = 0; i < number_of_query_images; i++) {
         cout << "next image" << endl;
         for (uint64_t j = 0; j < d; j++) {
             cout << static_cast<unsigned>(query_images[i][j]) << '\t';
@@ -94,7 +93,7 @@ void readFile(const string& filename, int file_type, uint32_t* number_of_images,
     uint32_t number_of_columns = 0;
     // open file to start reading
     file.open(filename, ios::in|ios::binary);
-    if (!file.is_open()){
+    if (!file.is_open()) {
         cerr << "Unable to open file" << endl;
         exit(ERROR);
     }

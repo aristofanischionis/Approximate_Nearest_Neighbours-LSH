@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 #include "../../headers/handle-input.hpp"
 #include "../../headers/common.hpp"
 #include "../../headers/cube/projection.hpp"
@@ -45,7 +44,7 @@ void readCubeFile (const string& filename, int file_type, uint32_t* number_of_im
     uint32_t number_of_columns = 0;
     // open file to start reading
     file.open(filename, ios::in|ios::binary);
-    if (!file.is_open()){
+    if (!file.is_open()) {
         cerr << "Unable to open file" << endl;
         exit(ERROR);
     }

@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <stdint.h>
-using namespace std;
 
 unsigned int manhattanDistance(int* x, int* y, uint64_t n) {
 	unsigned int sum =0;

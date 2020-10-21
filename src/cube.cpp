@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     handleCubeInput(argc, argv, &number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
 
     o_file.open(output_file);
-    if (!o_file.is_open()){
+    if (!o_file.is_open()) {
         cerr << "Output file can't be opened" << endl;
         exit(ERROR);
     }
