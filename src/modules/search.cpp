@@ -48,17 +48,17 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
     // we start putting neighbours from farthest to closest
     int* qarray, *parray;
 
+    // calculating g(q)
+    current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
+    pos_in_hash = customModulo(current_gp, hashtable_size);
+    if (pos_in_hash > hashtable_size - 1) {
+        // then something went wrong with g(p)
+        cerr << "Calculating g(q) went wrong" << endl;
+        exit(ERROR);
+    }
     auto startLSH = chrono::high_resolution_clock::now();
     // for all hash_tables
     for (int l = 0; l < L; l++) {
-        // calculating g(q)
-        current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
-        pos_in_hash = customModulo(current_gp, hashtable_size);
-        if (pos_in_hash > hashtable_size - 1) {
-            // then something went wrong with g(p)
-            cerr << "Calculating g(q) went wrong" << endl;
-            exit(ERROR);
-        }
         // loop over the bucket
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
@@ -94,7 +94,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
     std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
 
     (*file) << "Query:" << q_num << endl;
-    for (unsigned int i = 0; i < n_neighbours.size(); i++){
+    for (unsigned int i = 0; i < n_neighbours.size(); i++) {
         (*file) << "Nearest neighbour-" << i+1 << ": " << n_neighbours[i].first << endl;
         (*file) << "distanceLSH: " << n_neighbours[i].second << endl;
         (*file) << "distanceTrue: " << BNN[i].second << endl;
@@ -134,7 +134,7 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t 
             current_distance = manhattanDistance(qarray, parray, d);
             delete[] qarray;
             delete[] parray;
-            if (current_distance < radius) {
+            if (current_distance <= radius) {
                 // search if there is already inside
                 // using lambda function
                 unsigned int temp = HashTables[l][pos_in_hash][h];
@@ -144,7 +144,7 @@ vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t 
                     [&temp](const pair<unsigned int, unsigned int> &current_pair)
                     { return current_pair.first == temp; });
                 // if item NOT exists, then push this item in the vector
-                if(it == n_neighbours.end()){
+                if(it == n_neighbours.end()) {
                     n_neighbours.push_back(make_pair(temp, current_distance));
                 }
             }

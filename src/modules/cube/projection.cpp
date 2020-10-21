@@ -4,9 +4,13 @@
 #include <string>
 #include <bitset>
 #include <cmath>
+#include <chrono>
+#include <fstream>
+#include <algorithm>
 #include "../../headers/cube/handle-cube-input.hpp"
 #include "../../headers/manhattan-hashing.hpp"
 #include "../../headers/common.hpp"
+#include "../../headers/distances.hpp"
 
 using namespace std;
 #include <iostream>
@@ -120,11 +124,10 @@ vector<string> findHashWithSpecificHammingDist(string queryHash, int dist, int m
 	vector<string> res;
 	multimap <string, int> :: iterator itr;
 	int localProbes = maximumProbes;
-	for (itr = Hypercube.begin(); itr != Hypercube.end(); ++itr)
-	{
+	for (itr = Hypercube.begin(); itr != Hypercube.end(); ++itr) {
 		if(hammingDistance(queryHash, itr->first) == dist) {
 			// if doesn't exist in vector, i push back
-			if(find(res.begin(), res.end(), itr->first) == res.end()){
+			if(find(res.begin(), res.end(), itr->first) == res.end()) {
 				res.push_back(itr->first);
 				localProbes--;
 			}
@@ -140,18 +143,17 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 	vector<string> currentNeighbourBuckets;
 	vector<int> currentPossibleNeighbours;
 	vector<int> allPossibleNeighbours;
-	do
-	{
+	do {
 		currentNeighbourBuckets = findHashWithSpecificHammingDist(queryHash, currentHamming, numberOfProbesToCheck);
-		for (int buck = 0; buck < currentNeighbourBuckets.size(); buck++) {
+		for (unsigned int buck = 0; buck < currentNeighbourBuckets.size(); buck++) {
 
 			currentPossibleNeighbours = findImagesInBucket(currentNeighbourBuckets[buck]);
 			// checked some more
 			numberOfProbesToCheck--;
 			// well now push back elements to allPossibleNeighbours
-			for (int el = 0; el < currentPossibleNeighbours.size(); el++){
+			for (unsigned int el = 0; el < currentPossibleNeighbours.size(); el++){
 				allPossibleNeighbours.push_back(currentPossibleNeighbours[el]);
-				if(allPossibleNeighbours.size() == maximumN) break;
+				if(allPossibleNeighbours.size() == (unsigned int)maximumN) break;
 			}
 
 			if (numberOfProbesToCheck == 0) break;
@@ -164,14 +166,48 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 	return allPossibleNeighbours;
 }
 
-// TODO:
-// If manhattan q, image < radius and allNeighbours are less or equal to N
-// then print to file
-void hypercubeANN(int q_num, int probes, int N, int points_M, int radius, int d) {
-	
-	string queryHash = calculateCubeG_X(d, q_num, QUERY_FILE);
+// TODO: Implement BRute Force
+void hypercubeANN(ofstream* file, int q_num, int probes, int N, int points_M, int radius, int d) {
+    unsigned int current_distance = 0;
+    int maximumN = N;
 	vector<int> allPossibleNeighbours;
+    int* qarray, *parray;
+	string queryHash = calculateCubeG_X(d, q_num, QUERY_FILE);
+
+    auto startHypercube = chrono::high_resolution_clock::now();
+
 	allPossibleNeighbours = findAllNeighboursToBeChecked(queryHash, points_M, probes);
+
+	(*file) << "Query:" << q_num << endl;
+	for (unsigned int i=0; i<allPossibleNeighbours.size(); i++) {
+		qarray = convertArray(query_cube_images[q_num], d);
+        parray = convertArray(all_cube_images[allPossibleNeighbours[i]], d);
+        current_distance = manhattanDistance(qarray, parray, d);
+		delete[] qarray;
+        delete[] parray;
+        if (current_distance <= (unsigned int)radius) {
+        	 // write in output file
+		    // vector<pair<unsigned int, unsigned int> > BNN;
+
+		    // auto startTrue = chrono::high_resolution_clock::now();
+		    // BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images);
+		    // auto finishTrue = chrono::high_resolution_clock::now();
+		    // std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
+
+	        (*file) << "Nearest neighbour-" << i+1 << ": " << allPossibleNeighbours[i] << endl;
+	        (*file) << "distanceLSH: " << current_distance << endl;
+	        // (*file) << "distanceTrue: " << BNN[i].second << endl;
+		    // (*file) << "tLSH: " << elapsedHypercube.count() << endl;
+		    // (*file) << "tTrue: " << elapsedTrue.count() << endl;
+
+		    // BNN.clear();
+        	maximumN--;
+        }
+        if (maximumN == 0) break;
+	}
+	auto finishHypercube = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedHypercube = finishHypercube - startHypercube;
+	(*file) << "tLSH: " << elapsedHypercube.count() << endl;
 
 	allPossibleNeighbours.clear();
 }
