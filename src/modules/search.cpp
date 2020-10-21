@@ -51,6 +51,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
     // calculating g(q)
     current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
     pos_in_hash = customModulo(current_gp, hashtable_size);
+    qarray = convertArray(query_images[q_num], d);
     if (pos_in_hash > hashtable_size - 1) {
         // then something went wrong with g(p)
         cerr << "Calculating g(q) went wrong" << endl;
@@ -63,10 +64,8 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
-            qarray = convertArray(query_images[q_num], d);
             parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], d);
             current_distance = manhattanDistance(qarray, parray, d);
-            delete[] qarray;
             delete[] parray;
             if (current_distance < min_distance) {
                 n_neighbours.push_back(make_pair(HashTables[l][pos_in_hash][h], current_distance));
@@ -80,6 +79,8 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
         }
         // finished with this hash table
     }
+    delete[] qarray;
+    
     auto finishLSH = chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsedLSH = finishLSH - startLSH;
 
