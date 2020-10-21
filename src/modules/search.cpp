@@ -106,7 +106,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs (ofstream* file, uin
 }
 
 // searches using range search
-vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius,int number_of_images, int number_of_query_images) {
+vector<pair <unsigned int, unsigned int> > rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius, int number_of_images, int number_of_query_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_gp = 0;

@@ -14,10 +14,8 @@ using namespace std;
 int distribute_Bits() {
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, 2.0);
-
 	// Generate a new int number
 	int result = static_cast<int>(distribution(generator));
-	
 	return result;
 }
 
@@ -34,7 +32,6 @@ string decimalToBinary(int n) {
     //finding the binary form of the number and  
     //converting it to string.  
     string s = bitset<32> (n).to_string();
-      
     //Finding the first occurance of "1" 
     //to strip off the leading zeroes. 
     const auto loc1 = s.find('1');
@@ -84,7 +81,7 @@ void printF_X() {
 
 // find pos, correct bucket to put my image
 void insertToHypercube(string g_x, int image) {
-	Hypercube.insert({g_x, image});
+	Hypercube.insert(make_pair(g_x, image));
 }
 
 // print Hypercube
@@ -96,4 +93,85 @@ void printHypercube() {
 
 int calculateLogDspace(int d) {
 	return (int)(log2(d) - 1);
+}
+
+int hammingDistance(string queryHash, string bucketHash) {
+	int i = 0, distance = 0;
+	while(queryHash[i] != '\0') {
+		if(queryHash[i] != bucketHash[i]) {
+			distance++;
+		}
+		i++;
+	}
+	return distance;
+}
+
+vector<int> findImagesInBucket(string hash) {
+	vector<int> result;
+	auto search = Hypercube.equal_range(hash);
+	for (auto i = search.first ; i != search.second ; ++i) {
+		result.push_back(i->second);
+	}
+	return result;
+}
+
+// find strings that have hamming distance dist
+vector<string> findHashWithSpecificHammingDist(string queryHash, int dist, int maximumProbes) {
+	vector<string> res;
+	multimap <string, int> :: iterator itr;
+	int localProbes = maximumProbes;
+	for (itr = Hypercube.begin(); itr != Hypercube.end(); ++itr)
+	{
+		if(hammingDistance(queryHash, itr->first) == dist) {
+			// if doesn't exist in vector, i push back
+			if(find(res.begin(), res.end(), itr->first) == res.end()){
+				res.push_back(itr->first);
+				localProbes--;
+			}
+			if(localProbes == 0) break;
+		}
+	}
+	return res;
+}
+
+vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int probes) {
+	int currentHamming = 0;
+	int numberOfProbesToCheck = probes;
+	vector<string> currentNeighbourBuckets;
+	vector<int> currentPossibleNeighbours;
+	vector<int> allPossibleNeighbours;
+	do
+	{
+		currentNeighbourBuckets = findHashWithSpecificHammingDist(queryHash, currentHamming, numberOfProbesToCheck);
+		for (int buck = 0; buck < currentNeighbourBuckets.size(); buck++) {
+
+			currentPossibleNeighbours = findImagesInBucket(currentNeighbourBuckets[buck]);
+			// checked some more
+			numberOfProbesToCheck--;
+			// well now push back elements to allPossibleNeighbours
+			for (int el = 0; el < currentPossibleNeighbours.size(); el++){
+				allPossibleNeighbours.push_back(currentPossibleNeighbours[el]);
+				if(allPossibleNeighbours.size() == maximumN) break;
+			}
+
+			if (numberOfProbesToCheck == 0) break;
+			currentPossibleNeighbours.clear();
+		}
+		currentNeighbourBuckets.clear();
+		currentHamming++;
+	} while (true);
+
+	return allPossibleNeighbours;
+}
+
+// TODO:
+// If manhattan q, image < radius and allNeighbours are less or equal to N
+// then print to file
+void hypercubeANN(int q_num, int probes, int N, int points_M, int radius, int d) {
+	
+	string queryHash = calculateCubeG_X(d, q_num, QUERY_FILE);
+	vector<int> allPossibleNeighbours;
+	allPossibleNeighbours = findAllNeighboursToBeChecked(queryHash, points_M, probes);
+
+	allPossibleNeighbours.clear();
 }

@@ -23,7 +23,7 @@ void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number
 	// int randNum = rand()%number_of_query_images;
 	// qarray = convertArray(query_images[randNum], d);
 	// for (uint32_t image=0; image<number_of_images; image++){
-	// 	// convert array do it with vector bruuuuh
+	// 	// convert array do it with vector 
  //    	parray = convertArray(all_images[image], d);
  //    	distances.push_back(manhattanDistance(qarray, parray, d));
  //    	delete[] parray;
