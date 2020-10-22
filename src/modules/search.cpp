@@ -17,15 +17,16 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_distance = 0;
     int* qarray, *parray;
+    qarray = convertArray(query_images[q_num], d);
+
     // loop over the images array
     for (int i=0; i<number_of_images; i++) {
-        qarray = convertArray(query_images[q_num], d);
         parray = convertArray(all_images[i], d);
         current_distance = manhattanDistance(qarray, parray, d);
-        delete[] qarray;
         delete[] parray; 
         n_neighbours.push_back(make_pair(i, current_distance));
     }
+    delete[] qarray;
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
         return left.second < right.second;
     });
@@ -44,6 +45,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
     unsigned int current_gp = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
+    vector<pair<unsigned int, unsigned int> > BNN;
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
     int* qarray, *parray;
@@ -87,7 +89,6 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
     reverse(n_neighbours.begin(), n_neighbours.end());
     if (n_neighbours.size() > static_cast<unsigned int>(n)) n_neighbours.resize(n);
     // write in output file
-    vector<pair<unsigned int, unsigned int> > BNN;
 
     auto startTrue = chrono::high_resolution_clock::now();
     BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images);
@@ -116,24 +117,25 @@ void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsig
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
     // we start putting neighbours from farthest to closest
     int* qarray, *parray;
+
+    // calculating g(q)
+    current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
+    pos_in_hash = customModulo(current_gp, hashtable_size);
+    qarray = convertArray(query_images[q_num], d);
+    if (pos_in_hash > hashtable_size - 1) {
+        // then something went wrong with g(p)
+        cerr << "Calculating g(q) went wrong" << endl;
+        exit(ERROR);
+    }
     // for all hash_tables
     for (int l = 0; l < L; l++) {
-        // calculating g(q)
-        current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
-        pos_in_hash = customModulo(current_gp, hashtable_size);
-        if (pos_in_hash > hashtable_size - 1) {
-            // then something went wrong with g(p)
-            cerr << "Calculating g(q) went wrong" << endl;
-            exit(ERROR);
-        }
+        
         // loop over the bucket
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
-            qarray = convertArray(query_images[q_num], d);
             parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], d);
             current_distance = manhattanDistance(qarray, parray, d);
-            delete[] qarray;
             delete[] parray;
             if (current_distance <= radius) {
                 // search if there is already inside
@@ -156,6 +158,8 @@ void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsig
             }
         }
     }
+    delete[] qarray;
+    
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
         return left.second < right.second;
     });

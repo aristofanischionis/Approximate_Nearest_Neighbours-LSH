@@ -35,15 +35,16 @@ int main(int argc, char **argv) {
         w = 400;
         // calculateW_Component(d, number_of_images, number_of_query_images);
         o_file.close();
+        
+        handleCubeReExecution(&number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
         // open output file
         o_file.open(output_file);
         if (!o_file.is_open()){
             cerr << "Output file can't be opened" << endl;
             exit(ERROR);
         }
-        handleCubeReExecution(&number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
-        o_file.close();
     } while (true);
+    o_file.close();
     // DON'T FORGET TO FREE UP ALL USED SPACE
     // free up space for all_images
     // !!make function!!

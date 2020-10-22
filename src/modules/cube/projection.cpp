@@ -157,7 +157,7 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 				if(allPossibleNeighbours.size() == (unsigned int)maximumN) break;
 			}
 
-			if (numberOfProbesToCheck == 0) break;
+			if (numberOfProbesToCheck <= 0) break;
 			currentPossibleNeighbours.clear();
 		}
 		currentNeighbourBuckets.clear();
@@ -173,16 +173,16 @@ vector<pair <unsigned int, unsigned int> > hypercube_Full_Search(int d, int n, u
     vector<pair <unsigned int, unsigned int> >::iterator it;
     unsigned int current_distance = 0;
     int* qarray, *parray;
+    qarray = convertArray(query_cube_images[q_num], d);
 
     // loop over the images array
     for (int i=0; i<number_of_images; i++) {
-        qarray = convertArray(query_cube_images[q_num], d);
         parray = convertArray(all_cube_images[i], d);
         current_distance = manhattanDistance(qarray, parray, d);
-        delete[] qarray;
         delete[] parray; 
         n_neighbours.push_back(make_pair(i, current_distance));
     }
+    delete[] qarray;
     sort(n_neighbours.begin(), n_neighbours.end(), [](const pair<unsigned int, unsigned int> &left, const pair<unsigned int, unsigned int> &right) {
         return left.second < right.second;
     });

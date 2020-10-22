@@ -24,7 +24,6 @@ void initializeImageArray(ifstream *file, int file_type, uint32_t number_of_imag
             // pass to hypercube
             insertToHypercube(cube_g_x, (int)i);
         }
-        printHypercube();
     }
     else if (file_type == QUERY_FILE) {
         // initialize the array for the query dataset
