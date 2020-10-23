@@ -29,8 +29,8 @@ lsh : $(OBJS)
 cube : $(OBJCUBE)
 	$(CXX) -g $(OBJCUBE) -o cube
 
-cluster : $(OBJCLUSTER)
-	$(CXX) -g $(OBJCLUSTER) -o cluster
+cluster : cluster.o
+	$(CXX) -g cluster.o -o cluster
 
 # Final object files
 lsh.o : $(SOURCE) $(HEADER)
@@ -41,7 +41,7 @@ cube.o : $(SOURCECUBE) $(HEADERCUBE)
 
 # $(HEADER) $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp
 # $(HEADER) $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp
-cluster.o : src/cluster.cpp
+cluster.o : src/cluster.cpp $(LSH_HEADERS)common.hpp
 	$(CXX) $(FLAGS) src/cluster.cpp
 
 # FOR LSH
