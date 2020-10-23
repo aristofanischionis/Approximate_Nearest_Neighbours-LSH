@@ -29,7 +29,8 @@ int main(int argc, char **argv) {
     do {
         readCubeFile(query_file, QUERY_FILE, &number_of_query_images, &d_query, k);
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
-            hypercubeANN(&o_file, q_num, probes, n, points_M, r, d, number_of_images);
+            hypercubeANN(&o_file, q_num, n, d, number_of_images);
+            hypercubeRange(&o_file, q_num, probes, points_M, r, d, number_of_images);
         }
         w = 400;
         // calculateW_Component(d, number_of_images, number_of_query_images);

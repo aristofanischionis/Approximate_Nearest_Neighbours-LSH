@@ -95,7 +95,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
     auto finishTrue = chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
 
-    (*file) << "Query:" << q_num << endl;
+    (*file) << "Query: " << q_num << endl;
     for (unsigned int i = 0; i < n_neighbours.size(); i++) {
         (*file) << "Nearest neighbour-" << i+1 << ": " << n_neighbours[i].first << endl;
         (*file) << "distanceLSH: " << n_neighbours[i].second << endl;
@@ -137,7 +137,7 @@ void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsig
             parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], d);
             current_distance = manhattanDistance(qarray, parray, d);
             delete[] parray;
-            if (current_distance <= radius) {
+            if (current_distance < radius) {
                 // search if there is already inside
                 // using lambda function
                 unsigned int temp = HashTables[l][pos_in_hash][h];
