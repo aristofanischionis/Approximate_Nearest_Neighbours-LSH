@@ -1,11 +1,20 @@
 #include <iostream>
 #include <random>
+#include "../headers/common.hpp"
 #include "../headers/manhattan-hashing.hpp"
 #include "../headers/handle-input.hpp"
 #include "../headers/modulo.hpp"
 #include "../headers/search.hpp"
 #include "../headers/distances.hpp"
 using namespace std;
+
+int* convertArray(unsigned char* array, int size) {
+    int *result_array = new int [size];
+    for (int i = 0; i < size;i++) {
+        result_array[i] = static_cast<int>(array[i]);
+    }
+    return result_array;
+}
 
 void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number_of_query_images) {
 	// int* qarray, *parray;
@@ -14,7 +23,7 @@ void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number
 	// int randNum = rand()%number_of_query_images;
 	// qarray = convertArray(query_images[randNum], d);
 	// for (uint32_t image=0; image<number_of_images; image++){
-	// 	// convert array do it with vector bruuuuh
+	// 	// convert array do it with vector 
  //    	parray = convertArray(all_images[image], d);
  //    	distances.push_back(manhattanDistance(qarray, parray, d));
  //    	delete[] parray;
@@ -40,7 +49,7 @@ void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number
 	w = sum / (50*number_of_images);
 }
 
-float calculateS_IComponent(uint64_t d) {
+float calculateS_IComponent() {
 	float s_i;
 	random_device generator;
 	uniform_real_distribution<float> distribution (0.0, (float) w);
@@ -57,7 +66,7 @@ int calculateA_IComponent(float p_i, uint64_t d) {
 	int a_i;
 	float s_i;
 	// calculate s_i
-	s_i = calculateS_IComponent(d);
+	s_i = calculateS_IComponent();
 	// ADD w, to all p_i, this will move all of the p_i s away from the start of axis
 	// Will remove the problem of having negative numbers in the a_i components!
 	sub = p_i + w - s_i;

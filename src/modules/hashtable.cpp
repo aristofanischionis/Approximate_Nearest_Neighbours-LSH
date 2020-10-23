@@ -1,6 +1,8 @@
+#include <iostream>
 #include "../headers/hashtable.hpp"
 #include "../headers/modulo.hpp"
-#include <iostream>
+#include "../headers/common.hpp"
+#include "../headers/handle-input.hpp"
 
 using namespace std;
 
