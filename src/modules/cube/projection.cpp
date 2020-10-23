@@ -34,7 +34,7 @@ int create_CubeH_X(uint64_t d, int image, int file_type) {
 string decimalToBinary(int n) { 
     //finding the binary form of the number and  
     //converting it to string.  
-    string s = bitset<32> (n).to_string();
+    string s = bitset<64> (n).to_string();
     //Finding the first occurance of "1" 
     //to strip off the leading zeroes. 
     const auto loc1 = s.find('1');
@@ -131,7 +131,7 @@ vector<string> findHashWithSpecificHammingDist(string queryHash, int dist, int m
 				res.push_back(itr->first);
 				localProbes--;
 			}
-			if(localProbes == 0) break;
+			if(localProbes <= 0) break;
 		}
 	}
 	return res;
@@ -146,24 +146,38 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 
 	do {
 		currentNeighbourBuckets = findHashWithSpecificHammingDist(queryHash, currentHamming, numberOfProbesToCheck);
+		// ----
+		for (auto i = 0; i < currentNeighbourBuckets.size();i++){
+			cout << "currentNeighbourBuckets: " << currentNeighbourBuckets[i] << endl;
+		}
+		// ----
 		for (unsigned int buck = 0; buck < currentNeighbourBuckets.size(); buck++) {
-
 			currentPossibleNeighbours = findImagesInBucket(currentNeighbourBuckets[buck]);
+			// ---
+			for (auto i = 0; i < currentPossibleNeighbours.size();i++){
+				cout << "currentPossibleNeighbours: " << currentPossibleNeighbours[i] << endl;
+			}
+			// ---
 			// checked some more
 			numberOfProbesToCheck--;
 			// now push back elements to allPossibleNeighbours
 			for (unsigned int el = 0; el < currentPossibleNeighbours.size(); el++) {
 				allPossibleNeighbours.push_back(currentPossibleNeighbours[el]);
-				if(allPossibleNeighbours.size() == (unsigned int)maximumN) break;
+				if (allPossibleNeighbours.size() == (unsigned int)maximumN)
+					break;
 			}
-
-			if (numberOfProbesToCheck <= 0) break;
+			if (numberOfProbesToCheck <= 0)
+				break;
 			currentPossibleNeighbours.clear();
 		}
 		currentNeighbourBuckets.clear();
 		currentHamming++;
 	} while (true);
-
+	// ---
+	for (auto i = 0; i < allPossibleNeighbours.size();i++){
+		cout << "allPossibleNeighbours: " << allPossibleNeighbours[i] << endl;
+	}
+	// ---
 	return allPossibleNeighbours;
 }
 
@@ -207,10 +221,10 @@ void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, un
     std::chrono::duration<double> elapsedHypercube = finishHypercube - startHypercube;
 
     // get the time for brute force
-    auto startTrue = chrono::high_resolution_clock::now();
-    BNN = hypercube_Full_Search(d, n, q_num, number_of_images);
-    auto finishTrue = chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
+    // auto startTrue = chrono::high_resolution_clock::now();
+    // BNN = hypercube_Full_Search(d, n, q_num, number_of_images);
+    // auto finishTrue = chrono::high_resolution_clock::now();
+    // std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
 
     // write in output file
 	(*file) << "Query:" << q_num << endl;
@@ -232,7 +246,7 @@ void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, un
 	delete[] qarray;
 
 	(*file) << "tLSH: " << elapsedHypercube.count() << endl;
-	(*file) << "tTrue: " << elapsedTrue.count() << endl;
+	// (*file) << "tTrue: " << elapsedTrue.count() << endl;
 
 	allPossibleNeighbours.clear();
 }
