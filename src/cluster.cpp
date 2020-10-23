@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 	string method;
 
 	if (argc < 9) {
-		cerr << "You need to provide the path of the files" << endl;
+		cerr << "A file path or method is missing" << endl;
 		exit(ERROR);
 	}
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 
 	param = argv[3];
 	if (param != "-c") {
-		cerr << "You need to provide the coinfiguration_file path" << endl;
+		cerr << "You need to provide the configuration_file path" << endl;
 		exit(ERROR);
 	}
 	config_file = argv[4];
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 	transform(method.begin(), method.end(),method.begin(), ::toupper);
 
 	if (method == "CLASSIC") {
-		// Run classic
+		// TDDO: Run classic
 	}
 	else if (method == "LSH") {
 		if (!system("cd - && ./lsh"))
