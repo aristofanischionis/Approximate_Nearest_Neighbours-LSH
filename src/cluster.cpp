@@ -19,21 +19,21 @@ int main(int argc, char **argv) {
 
 	string param = argv[1];
 	// get the path files
-	if (param != "-d") {
+	if (param != "-i") {
 		cerr << "You need to provide the input_file path" << endl;
 		exit(ERROR);
 	}
 	input_file = argv[2];
 
 	param = argv[3];
-	if (param != "-q") {
+	if (param != "-c") {
 		cerr << "You need to provide the coinfiguration_file path" << endl;
 		exit(ERROR);
 	}
 	config_file = argv[4];
 
 	param = argv[5];
-	if (param != "-q") {
+	if (param != "-o") {
 		cerr << "You need to provide the output_file path" << endl;
 		exit(ERROR);
 	}

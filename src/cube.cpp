@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     w = 400;
     string output_file, query_file;
     ofstream o_file;
-    
+
     handleCubeInput(argc, argv, &number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
     o_file.open(output_file);
     if (!o_file.is_open()) {
