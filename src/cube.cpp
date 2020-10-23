@@ -20,10 +20,7 @@ int main(int argc, char **argv) {
     string output_file, query_file;
     ofstream o_file;
 
-    cout << "MPAINW EDW" << endl;
     handleCubeInput(argc, argv, &number_of_images, &d, &k, &points_M, &probes, &n, &r, &output_file, &query_file);
-    cout << "TELOS HANDLE INPUT" << endl;
-
     o_file.open(output_file);
     if (!o_file.is_open()) {
         cerr << "Output file can't be opened" << endl;

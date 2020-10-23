@@ -35,14 +35,11 @@ string decimalToBinary(int n) {
     //finding the binary form of the number and  
     //converting it to string.  
     string s = bitset<64> (n).to_string();
-    //Finding the first occurance of "1" 
-    //to strip off the leading zeroes. 
-    const auto loc1 = s.find('1');
 
-    if(loc1 != string::npos)
-    	return s.substr(loc1);
+    // keep d' bits
+    s.erase(s.begin(), s.end() - d_space);
     
-    return "0";
+    return s;
 } 
 
 string calculateCubeG_X(int d, int image, int file_type) {
@@ -143,41 +140,27 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 	vector<string> currentNeighbourBuckets;
 	vector<int> currentPossibleNeighbours;
 	vector<int> allPossibleNeighbours;
-
+	int flag = 1;
 	do {
 		currentNeighbourBuckets = findHashWithSpecificHammingDist(queryHash, currentHamming, numberOfProbesToCheck);
-		// ----
-		for (auto i = 0; i < currentNeighbourBuckets.size();i++){
-			cout << "currentNeighbourBuckets: " << currentNeighbourBuckets[i] << endl;
-		}
-		// ----
 		for (unsigned int buck = 0; buck < currentNeighbourBuckets.size(); buck++) {
 			currentPossibleNeighbours = findImagesInBucket(currentNeighbourBuckets[buck]);
-			// ---
-			for (auto i = 0; i < currentPossibleNeighbours.size();i++){
-				cout << "currentPossibleNeighbours: " << currentPossibleNeighbours[i] << endl;
-			}
-			// ---
 			// checked some more
 			numberOfProbesToCheck--;
 			// now push back elements to allPossibleNeighbours
 			for (unsigned int el = 0; el < currentPossibleNeighbours.size(); el++) {
 				allPossibleNeighbours.push_back(currentPossibleNeighbours[el]);
-				if (allPossibleNeighbours.size() == (unsigned int)maximumN)
-					break;
+				if (allPossibleNeighbours.size() >= (unsigned int)maximumN)
+					flag = 0;
 			}
 			if (numberOfProbesToCheck <= 0)
-				break;
+				flag = 0;
 			currentPossibleNeighbours.clear();
 		}
 		currentNeighbourBuckets.clear();
 		currentHamming++;
-	} while (true);
-	// ---
-	for (auto i = 0; i < allPossibleNeighbours.size();i++){
-		cout << "allPossibleNeighbours: " << allPossibleNeighbours[i] << endl;
-	}
-	// ---
+	} while (flag);
+
 	return allPossibleNeighbours;
 }
 
@@ -234,10 +217,10 @@ void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, un
         delete[] parray;
         if (current_distance <= radius) {
 	        (*file) << "Nearest neighbour-" << counter+1 << ": " << allPossibleNeighbours[i] << endl;
-	        (*file) << "distanceLSH: " << current_distance << endl;
-	        (*file) << "distanceTrue: " << BNN[counter].second << endl;
+	        (*file) << "distanceHypercube: " << current_distance << endl;
+	        // (*file) << "distanceTrue: " << BNN[counter].second << endl;
 
-		    BNN.clear();
+		    // BNN.clear();
         	maximumN--;
         	counter++;
         }
@@ -245,7 +228,7 @@ void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, un
 	}
 	delete[] qarray;
 
-	(*file) << "tLSH: " << elapsedHypercube.count() << endl;
+	(*file) << "tHypercube: " << elapsedHypercube.count() << endl;
 	// (*file) << "tTrue: " << elapsedTrue.count() << endl;
 
 	allPossibleNeighbours.clear();

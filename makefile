@@ -4,17 +4,21 @@ LSH_MODULES = src/modules/
 CUBE_PATH = src/headers/cube/
 CUBE_MODULES = src/modules/cube/
 
+COMMONOBJS = manhattan-hashing.o manhattan-distance.o modulo.o handle-input.o read-file.o hashtable.o
+
 HEADER = $(LSH_HEADERS)handle-input.hpp $(LSH_HEADERS)distances.hpp $(LSH_HEADERS)manhattan-hashing.hpp $(LSH_HEADERS)modulo.hpp $(LSH_HEADERS)hashtable.hpp $(LSH_HEADERS)search.hpp $(LSH_HEADERS)common.hpp
 SOURCE =  src/lsh.cpp $(LSH_MODULES)manhattan-distance.cpp $(LSH_MODULES)handle-input.cpp $(LSH_MODULES)read-file.cpp $(LSH_MODULES)manhattan-hashing.cpp $(LSH_MODULES)modulo.cpp $(LSH_MODULES)hashtable.cpp $(LSH_MODULES)search.cpp
-OBJS = lsh.o manhattan-distance.o handle-input.o read-file.o manhattan-hashing.o modulo.o hashtable.o search.o
+OBJS = lsh.o search.o $(COMMONOBJS)
 
 HEADERCUBE = $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp $(LSH_HEADERS)common.hpp
 SOURCECUBE = src/cube.cpp $(CUBE_MODULES)handle-cube-input.cpp $(CUBE_MODULES)read-cube-file.cpp $(CUBE_MODULES)projection.cpp
-OBJCUBE = cube.o handle-cube-input.o projection.o read-cube-file.o manhattan-hashing.o manhattan-distance.o modulo.o handle-input.o read-file.o hashtable.o
+OBJCUBE = cube.o handle-cube-input.o projection.o read-cube-file.o $(COMMONOBJS)
+
+OBJCLUSTER = cluster.o handle-cube-input.o projection.o read-cube-file.o search.o $(COMMONOBJS)
 
 CXX = g++
 FLAGS = -std=c++11 -O3 -g -c -Wall
-OUT = lsh cube
+OUT = lsh cube cluster
 
 all: $(OUT)
 
@@ -25,12 +29,20 @@ lsh : $(OBJS)
 cube : $(OBJCUBE)
 	$(CXX) -g $(OBJCUBE) -o cube
 
+cluster : $(OBJCLUSTER)
+	$(CXX) -g $(OBJCLUSTER) -o cluster
+
 # Final object files
 lsh.o : $(SOURCE) $(HEADER)
 	$(CXX) $(FLAGS) $(SOURCE)
 
 cube.o : $(SOURCECUBE) $(HEADERCUBE)
 	$(CXX) $(FLAGS) $(SOURCECUBE)
+
+# $(HEADER) $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp
+# $(HEADER) $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp
+cluster.o : src/cluster.cpp
+	$(CXX) $(FLAGS) src/cluster.cpp
 
 # FOR LSH
 manhattan-distance.o : $(LSH_MODULES)manhattan-distance.cpp

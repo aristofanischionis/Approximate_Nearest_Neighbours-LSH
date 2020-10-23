@@ -167,6 +167,7 @@ void handleCubeInput(
 	// M as given from theory
 	M = pow(2, 32/(*k));
 	m = M/2 - 1;
+
 	// read data from the input_file
 	readCubeFile(input_file, INPUT_FILE, number_of_images, d, *k);
 	// returning these values to main to continue execution

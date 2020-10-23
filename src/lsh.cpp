@@ -29,10 +29,6 @@ int main(int argc, char **argv) {
     }
     do {
         readFile(query_file, QUERY_FILE, &number_of_query_images, &d_query, k, l);
-
-        // ------
-        // printFiles(number_of_images, number_of_query_images, d);
-        // ------
         for (uint32_t q_num = 0; q_num < number_of_query_images; q_num++) {
             approximateN_NNs(&o_file, d, k, n, l, q_num, number_of_images);
             rangeSearch(&o_file, d, k, l, q_num, r, number_of_images);
