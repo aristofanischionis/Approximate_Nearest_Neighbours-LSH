@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include "headers/common.hpp"
+#include "headers/kmeansPP/kmeansPP.hpp"
 
 using namespace std;
 
@@ -46,6 +47,8 @@ int main(int argc, char **argv) {
 	int points_M = 10;
 	int k_Hypercube = 3;
 	int probes = 2;
+	uint32_t number_of_images = 0;
+	uint64_t d = 0;
 
 	if (argc < 9) {
 		cerr << "A file path or method is missing" << endl;
@@ -86,8 +89,9 @@ int main(int argc, char **argv) {
 	}
 
 	readConfFile(config_file, &K_medians, &L, &k_LSH, &points_M, &k_Hypercube, &probes);
+	readClusterFile(input_file, &number_of_images, &d);
 
-	if(K_medians == -1) {
+	if (K_medians < 1) {
 		cerr << "You have to give a value for K-medians" << endl;
 		exit(ERROR);
 	}
