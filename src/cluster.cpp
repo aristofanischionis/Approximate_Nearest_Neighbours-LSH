@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <string>
 #include <algorithm>
@@ -6,11 +7,45 @@
 
 using namespace std;
 
+// read conf file
+void readConfFile(string filename, int* K_medians, int *L, int *k_LSH, int *points_M, int *k_Hypercube, int *probes) {
+	ifstream confFile(filename);
+	string param;
+	int value;
+
+	while (confFile >> param >> value) {
+		if(param == "number_of_clusters:") {
+			*K_medians = value;
+		}
+		else if(param == "number_of_vector_hash_tables:") {
+			*L = value;
+		}
+		else if(param == "number_of_vector_hash_functions:") {
+			*k_LSH = value;
+		}
+		else if(param == "max_number_M_hypercube:") {
+			*points_M = value;
+		}
+		else if(param == "number_of_hypercube_dimensions:") {
+			*k_Hypercube = value;
+		}
+		else if(param == "number_of_probes:") {
+			*probes = value;
+		}
+	}
+}
+
 int main(int argc, char **argv) {
 	string output_file;
 	string input_file;
 	string config_file;
 	string method;
+	int K_medians = -1;
+	int L = 3;
+	int k_LSH = 4;
+	int points_M = 10;
+	int k_Hypercube = 3;
+	int probes = 2;
 
 	if (argc < 9) {
 		cerr << "A file path or method is missing" << endl;
@@ -38,7 +73,7 @@ int main(int argc, char **argv) {
 		exit(ERROR);
 	}
 	output_file = argv[6];
-
+	
 	for (int i = 7; i < argc; i++) {
 		param = argv[i];
 		if (!argv[i+1]) exit(ERROR);
@@ -46,20 +81,33 @@ int main(int argc, char **argv) {
 			// Do staff for complete
 		}
 		else if (param == "-m") {
-			method = argv[i+1];
+			method = argv[++i];
 		}
 	}
-	// TODO: Read from config file
 
+	readConfFile(config_file, &K_medians, &L, &k_LSH, &points_M, &k_Hypercube, &probes);
 
+	if(K_medians == -1) {
+		cerr << "You have to give a value for K-medians" << endl;
+		exit(ERROR);
+	}
 	// Make it to upper
 	transform(method.begin(), method.end(),method.begin(), ::toupper);
 
+	char command[256];
 	if (method == "CLASSIC") {
-		// TDDO: Run classic
+		// TODO: Run classic
 	}
 	else if (method == "LSH") {
-		if (!system("cd - && ./lsh"))
+		strcpy(command, "cd - && ./lsh ");
+		strcat(command, "-d ");
+		strcat(command, "-q ");
+		strcat(command, "-k ");
+		strcat(command, "-L ");
+		strcat(command, "-o ");
+		strcat(command, "-N ");
+		strcat(command, "-R ");
+		if (!system(command))
 			cerr << "Something went wrong on system" <<endl;
 	}
 	else if (method == "HYPERCUBE") {
@@ -69,3 +117,4 @@ int main(int argc, char **argv) {
 
 	return SUCCESS;
 }
+
