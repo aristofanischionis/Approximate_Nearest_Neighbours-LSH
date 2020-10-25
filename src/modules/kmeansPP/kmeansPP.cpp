@@ -66,18 +66,21 @@ void updateNearClusters(vector<int> centroids, uint32_t number_of_images, uint64
     }
 }
 
-void updateCentroids(vector<int> centroids) {
-    vector<int>freq(centroids_.size(),0);
-    vector<datapoint>new_centroids(centroids_.size(),vector<double>(centroids_[0].size(),0));
-    for (int i = 0; i < input_data.size() ; ++i) {
-        ++freq[nearest_cluster_idx[i]];
-        for(int j=0 ; j< input_data[i].size() ; ++j)
-            new_centroids[nearest_cluster_idx[i]][j] += input_data[i][j];
-    }
+void updateCentroids(vector<int> centroids, uint32_t number_of_images, uint64_t d) {
+    vector<int> size_of_cluster.resize(centroids.size());
+    vector<int*> new_centroids.resize(centroids.size());
 
-    for (int i = 0; i < centroids_.size() ; ++i)
+    for (unsigned int i=0; i<new_centroids.size(); i++) {
+        new_centroids[i] = new int [d];
+    }
+    for (uint32_t i = 0; i < number_of_images ; i++) {
+        size_of_cluster[nearest_clusters[i].first]++;
+        for(int j=0 ; j < d ; j++)
+            new_centroids[nearest_clusters[i].first][j] += input_data[i][j];
+    }
+    for (int i = 0; i < centroids.size() ; ++i)
         if(freq[i])
-            for (int j = 0; j < centroids_[i].size() ; ++j)
+            for (int j = 0; j < centroids[i].size() ; ++j)
                 new_centroids[i][j] *= (1.0/(double)freq[i]);
     cur_centroids_ = new_centroids;
 }
@@ -90,7 +93,7 @@ bool equalCentroids (uint64_t d) {
     return (total_distance < SMALL_E);
 }
 
-vector<vector<int> > kmeansPP (int K, int number_of_images, uint64_t d) {
+vector<vector<int> > kmeansPP (int K, uint32_t number_of_images, uint64_t d) {
     vector<vector<int> > clusters(K);
     // Get a random centroid
     int first_centroid = getRandomNumber(number_of_images);
@@ -100,7 +103,7 @@ vector<vector<int> > kmeansPP (int K, int number_of_images, uint64_t d) {
     nearest_clusters.resize(number_of_images);
 
     // first centroid was randomly selected already
-    for (int i = 1; i < K; i++){
+    for (int i = 1; i < K; i++) {
         updateNearClusters(initial_centroids, number_of_images, d);
         initial_centroids.push_back(nextInitialCentroidIndex(number_of_images));
     }
