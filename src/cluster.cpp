@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include <string>
+#include <cstring>
 #include <algorithm>
 #include "headers/common.hpp"
 #include "headers/kmeansPP/kmeansPP.hpp"

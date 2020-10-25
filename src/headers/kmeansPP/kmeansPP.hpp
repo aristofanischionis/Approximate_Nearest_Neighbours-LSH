@@ -9,9 +9,9 @@ extern vector<pair<int, unsigned int> > nearest_clusters;
 // which correspond to each image
 // To access the array with the dimensions, use cluster_images[i]
 
-extern vector<int> initial_centroids;
-extern vector<int> current_centroids;
-extern vector<int> previous_centroid;
+extern vector<int*> initial_centroids;
+extern vector<int*> current_centroids;
+extern vector<int*> previous_centroid;
 // in cluster images, I save number_of_images images (is a d-dimensional array)
 extern int** cluster_images;
 
