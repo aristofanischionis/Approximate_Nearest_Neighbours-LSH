@@ -42,7 +42,7 @@ vector<pair <unsigned int, unsigned int> > approximateN_NNs_Full_Search(uint64_t
 void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t q_num, int number_of_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     unsigned int min_distance = inf;
-    unsigned int current_gp = 0;
+    unsigned int current_gp = 0, current_gq = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
     vector<pair<unsigned int, unsigned int> > BNN;
@@ -51,8 +51,8 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
     int* qarray, *parray;
 
     // calculating g(q)
-    current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
-    pos_in_hash = customModulo(current_gp, hashtable_size);
+    current_gq = calculateG_X(k, d, q_num, QUERY_FILE);
+    pos_in_hash = customModulo(current_gq, hashtable_size);
     qarray = convertArray(query_images[q_num], d);
     if (pos_in_hash > hashtable_size - 1) {
         // then something went wrong with g(p)
@@ -66,11 +66,14 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
-            parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], d);
+            parray = convertArray(all_images[HashTables[l][pos_in_hash][h].first], d);
+            // calculate distance and g_p
             current_distance = manhattanDistance(qarray, parray, d);
+            current_gp = HashTables[l][pos_in_hash][h].second;
+            // delete the parray now
             delete[] parray;
-            if (current_distance < min_distance) {
-                n_neighbours.push_back(make_pair(HashTables[l][pos_in_hash][h], current_distance));
+            if (current_distance < min_distance && current_gq == current_gp) {
+                n_neighbours.push_back(make_pair(HashTables[l][pos_in_hash][h].first, current_distance));
                 min_distance = current_distance;
             }
             // take into account a maximum of (10 * L) points in each hashtable
@@ -111,7 +114,7 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
 void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsigned int radius, int number_of_images) {
     vector<pair <unsigned int, unsigned int> > n_neighbours;
     vector<pair <unsigned int, unsigned int> >::iterator it;
-    unsigned int current_gp = 0;
+    unsigned int current_gp = 0, current_gq = 0;
     unsigned int current_distance = 0;
     int pos_in_hash = 0;
     int hashtable_size = number_of_images / HASHTABLE_NUMBER;
@@ -119,8 +122,8 @@ void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsig
     int* qarray, *parray;
 
     // calculating g(q)
-    current_gp = calculateG_X(k, d, q_num, QUERY_FILE);
-    pos_in_hash = customModulo(current_gp, hashtable_size);
+    current_gq = calculateG_X(k, d, q_num, QUERY_FILE);
+    pos_in_hash = customModulo(current_gq, hashtable_size);
     qarray = convertArray(query_images[q_num], d);
     if (pos_in_hash > hashtable_size - 1) {
         // then something went wrong with g(p)
@@ -134,13 +137,16 @@ void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsig
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket
             // distance between HashTables[l][pos_in_hash][h], and query_image[q_num]
-            parray = convertArray(all_images[HashTables[l][pos_in_hash][h]], d);
+            parray = convertArray(all_images[HashTables[l][pos_in_hash][h].first], d);
+            // calculate distance and g_p
             current_distance = manhattanDistance(qarray, parray, d);
+            current_gp = HashTables[l][pos_in_hash][h].second;
+            // delete the parray now
             delete[] parray;
-            if (current_distance < radius) {
+            if (current_distance < radius && current_gq == current_gp) {
                 // search if there is already inside
                 // using lambda function
-                unsigned int temp = HashTables[l][pos_in_hash][h];
+                unsigned int temp = HashTables[l][pos_in_hash][h].first;
                 it = find_if(
                     n_neighbours.begin(),
                     n_neighbours.end(),
