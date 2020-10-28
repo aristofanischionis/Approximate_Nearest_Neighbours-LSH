@@ -2,12 +2,10 @@
 #include <stdint.h>
 #include <fstream>
 
-#define inf 4294967295
 #define HASHTABLE_NUMBER 16
 #define SMALL_K 4
 #define SMALL_L 5
 
-extern std::vector<std::vector<std::vector<unsigned int> > > HashTables;
 // giving universal access to the all_images array
 extern unsigned char **all_images;
 extern unsigned char **query_images;

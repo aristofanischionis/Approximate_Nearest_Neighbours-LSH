@@ -5,6 +5,7 @@
 #define ERROR 1
 #define	SMALL_N	1
 #define	SMALL_R	10000
+#define inf 4294967295
 
 extern unsigned int w;
 extern unsigned int M;

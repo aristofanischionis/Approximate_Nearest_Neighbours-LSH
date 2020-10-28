@@ -16,10 +16,9 @@ using namespace std;
 
 int distribute_Bits() {
 	random_device generator;
-	uniform_real_distribution<float> distribution (0.0, 2.0);
+	uniform_int_distribution<int> distribution (0, 2);
 	// Generate a new int number
-	int result = static_cast<int>(distribution(generator));
-	return result;
+	return distribution(generator);
 }
 
 // Calculate h(x) using the formula from the theory
@@ -187,8 +186,9 @@ vector<pair <unsigned int, unsigned int> > hypercube_Full_Search(int d, int n, u
     return n_neighbours;
 }
 
-void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, unsigned int radius, int d, int number_of_images) {
+void hypercubeANN(ofstream* file, int q_num, int n, int d, int number_of_images) {
     unsigned int current_distance = 0;
+    unsigned int min_distance = inf;
     int maximumN = n;
     int counter = 0;
 	vector<int> allPossibleNeighbours;
@@ -197,30 +197,29 @@ void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, un
 	qarray = convertArray(query_cube_images[q_num], d);
 	vector<pair<unsigned int, unsigned int> > BNN;
 
-	// get the time for Hypercube
-    auto startHypercube = chrono::high_resolution_clock::now();
-	allPossibleNeighbours = findAllNeighboursToBeChecked(queryHash, points_M, probes);
-	auto finishHypercube = chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsedHypercube = finishHypercube - startHypercube;
-
     // get the time for brute force
     // auto startTrue = chrono::high_resolution_clock::now();
     // BNN = hypercube_Full_Search(d, n, q_num, number_of_images);
     // auto finishTrue = chrono::high_resolution_clock::now();
     // std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
 
+	// get the time for Hypercube
+    auto startHypercube = chrono::high_resolution_clock::now();
+
+	allPossibleNeighbours = findImagesInBucket(queryHash);
+
     // write in output file
-	(*file) << "Query:" << q_num << endl;
+	(*file) << "Query: " << q_num << endl;
 	for (unsigned int i=0; i<allPossibleNeighbours.size(); i++) {
         parray = convertArray(all_cube_images[allPossibleNeighbours[i]], d);
         current_distance = manhattanDistance(qarray, parray, d);
         delete[] parray;
-        if (current_distance <= radius) {
+        if (current_distance < min_distance) {
 	        (*file) << "Nearest neighbour-" << counter+1 << ": " << allPossibleNeighbours[i] << endl;
 	        (*file) << "distanceHypercube: " << current_distance << endl;
 	        // (*file) << "distanceTrue: " << BNN[counter].second << endl;
 
-		    // BNN.clear();
+		    min_distance = current_distance;
         	maximumN--;
         	counter++;
         }
@@ -228,8 +227,43 @@ void hypercubeANN(ofstream* file, int q_num, int probes, int n, int points_M, un
 	}
 	delete[] qarray;
 
+	auto finishHypercube = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedHypercube = finishHypercube - startHypercube;
+
+
+
 	(*file) << "tHypercube: " << elapsedHypercube.count() << endl;
 	// (*file) << "tTrue: " << elapsedTrue.count() << endl;
+
+	BNN.clear();
+	allPossibleNeighbours.clear();
+
+}
+
+void hypercubeRange(ofstream* file, int q_num, int probes, int points_M, unsigned int radius, int d, int number_of_images) {
+    unsigned int current_distance = 0;
+	vector<int> allPossibleNeighbours;
+    int* qarray, *parray;
+	string queryHash = calculateCubeG_X(d, q_num, QUERY_FILE);
+	qarray = convertArray(query_cube_images[q_num], d);
+
+	// get the time for Hypercube
+    auto startHypercube = chrono::high_resolution_clock::now();
+	allPossibleNeighbours = findAllNeighboursToBeChecked(queryHash, points_M, probes);
+	auto finishHypercube = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedHypercube = finishHypercube - startHypercube;
+
+    // write in output file
+	(*file) << "R-near neighbours:"<< endl;
+	for (unsigned int i=0; i<allPossibleNeighbours.size(); i++) {
+        parray = convertArray(all_cube_images[allPossibleNeighbours[i]], d);
+        current_distance = manhattanDistance(qarray, parray, d);
+        delete[] parray;
+        if (current_distance < radius) {
+	        (*file) << allPossibleNeighbours[i] << endl;
+        }
+	}
+	delete[] qarray;
 
 	allPossibleNeighbours.clear();
 }
