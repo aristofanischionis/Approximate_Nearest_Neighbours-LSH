@@ -16,10 +16,9 @@ using namespace std;
 
 int distribute_Bits() {
 	random_device generator;
-	uniform_real_distribution<float> distribution (0.0, 2.0);
+	uniform_int_distribution<int> distribution (0, 2);
 	// Generate a new int number
-	int result = static_cast<int>(distribution(generator));
-	return result;
+	return distribution(generator);
 }
 
 // Calculate h(x) using the formula from the theory
