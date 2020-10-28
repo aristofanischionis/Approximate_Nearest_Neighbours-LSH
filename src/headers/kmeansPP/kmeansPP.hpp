@@ -19,4 +19,4 @@ extern vector<int*> previous_centroid;
 extern int** cluster_images;
 
 void readClusterFile(const string&, uint32_t*, uint64_t*);
-void kmeansPP (int, uint32_t, uint64_t);
+vector<pair<int*, vector<int> > > kmeansPP(int, uint32_t, uint64_t);

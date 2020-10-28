@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
 	int probes = 2;
 	uint32_t number_of_images = 0;
 	uint64_t d = 0;
+	vector<pair<int*, vector<int> > > clusters;
 
 	if (argc < 9) {
 		cerr << "A file path or method is missing" << endl;
@@ -98,9 +99,8 @@ int main(int argc, char **argv) {
 	// Make it to upper
 	transform(method.begin(), method.end(),method.begin(), ::toupper);
 
-	char command[256];
 	if (method == "CLASSIC") {
-		kmeansPP(K_medians, number_of_images, d);
+		clusters = kmeansPP(K_medians, number_of_images, d);
 	}
 	// else if (method == "LSH") {
 	// 	strcpy(command, "cd - && ./lsh ");

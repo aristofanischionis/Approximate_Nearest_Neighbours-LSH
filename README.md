@@ -9,7 +9,7 @@ Or like this to run the cube algorithm
 `make && ./cube -d Datasets/dataset -q Datasets/queryset -k 14 -M 10 -probes 5 -o results2.txt -N 5 -R 10000`
 
 Cluster:
-`./cluster -i Datasets/dataset -c cluster.conf -o testOutputCluster.txt -complete -m Classic`
+`./cluster -i Datasets/queryset -c cluster.conf -o testOutputCluster.txt -complete -m Classic`
 
 **File paths have to be without ""**
 _Provided that we have the dataset in the folder ./Datasets/dataset_

@@ -3,7 +3,6 @@
 #include "../../headers/distances.hpp"
 #include "../../headers/common.hpp"
 
-// vector<pair<int*, vector<int> > > clusters(K);
 unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector<int> > > clusters, int c, u_int64_t d) {
     unsigned int total_dist = 0;
     // for all images in this cluster

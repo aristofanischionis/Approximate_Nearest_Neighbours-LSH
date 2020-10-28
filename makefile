@@ -18,9 +18,9 @@ SOURCECUBE = src/cube.cpp $(CUBE_MODULES)handle-cube-input.cpp $(CUBE_MODULES)re
 OBJCUBE = cube.o handle-cube-input.o projection.o read-cube-file.o $(COMMONOBJS)
 
 # $(KMEANSPP_MODULES)silhouette.cpp
-HEADERCLUSTER = $(LSH_HEADERS)common.hpp $(KMEANSPP_PATH)kmeansPP.hpp $(LSH_HEADERS)distances.hpp $(LSH_HEADERS)manhattan-hashing.hpp
-SOURCECLUSTER = $(KMEANSPP_MODULES)kmeansPP.cpp $(KMEANSPP_MODULES)read-cluster-input.cpp $(LSH_MODULES)manhattan-distance.cpp $(LSH_MODULES)manhattan-hashing.cpp
-OBJCLUSTER = cluster.o kmeansPP.o $(COMMONOBJS)
+HEADERCLUSTER = $(LSH_HEADERS)common.hpp $(KMEANSPP_PATH)kmeansPP.hpp
+SOURCECLUSTER = src/cluster.cpp $(KMEANSPP_MODULES)kmeansPP.cpp $(KMEANSPP_MODULES)read-cluster-input.cpp
+OBJCLUSTER = cluster.o kmeansPP.o read-cluster-input.o $(COMMONOBJS)
 
 CXX = g++
 FLAGS = -std=c++11 -O3 -g -c -Wall
