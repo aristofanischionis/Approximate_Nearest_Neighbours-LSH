@@ -1,5 +1,6 @@
 // uint32_t undefined reference.
 #include <stdint.h>
+#include <vector>
 
 void initializeHashtables(int, uint32_t);
 void insertToHashtable(int, uint32_t, unsigned int, uint32_t);
