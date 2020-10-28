@@ -100,24 +100,24 @@ int main(int argc, char **argv) {
 
 	char command[256];
 	if (method == "CLASSIC") {
-		// TODO: Run classic
+		kmeansPP(K_medians, number_of_images, d);
 	}
-	else if (method == "LSH") {
-		strcpy(command, "cd - && ./lsh ");
-		strcat(command, "-d ");
-		strcat(command, "-q ");
-		strcat(command, "-k ");
-		strcat(command, "-L ");
-		strcat(command, "-o ");
-		strcat(command, "-N ");
-		strcat(command, "-R ");
-		if (!system(command))
-			cerr << "Something went wrong on system" <<endl;
-	}
-	else if (method == "HYPERCUBE") {
-		if (!system("cd - && ./cube"))
-			cerr << "Something went wrong on system" <<endl;
-	}
+	// else if (method == "LSH") {
+	// 	strcpy(command, "cd - && ./lsh ");
+	// 	strcat(command, "-d ");
+	// 	strcat(command, "-q ");
+	// 	strcat(command, "-k ");
+	// 	strcat(command, "-L ");
+	// 	strcat(command, "-o ");
+	// 	strcat(command, "-N ");
+	// 	strcat(command, "-R ");
+	// 	if (!system(command))
+	// 		cerr << "Something went wrong on system" <<endl;
+	// }
+	// else if (method == "HYPERCUBE") {
+	// 	if (!system("cd - && ./cube"))
+	// 		cerr << "Something went wrong on system" <<endl;
+	// }
 
 	return SUCCESS;
 }

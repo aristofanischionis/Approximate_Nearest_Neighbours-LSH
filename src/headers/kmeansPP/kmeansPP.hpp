@@ -1,7 +1,10 @@
+#include <stdint.h>
 #include <vector>
 // random value for now find the best
 // TODO
-#define SMALL_E 5 
+#define SMALL_E 100 
+#define MAX_LOOPS 9
+
 using namespace std;
 
 extern vector<pair<int, unsigned int> > nearest_clusters;
@@ -16,3 +19,4 @@ extern vector<int*> previous_centroid;
 extern int** cluster_images;
 
 void readClusterFile(const string&, uint32_t*, uint64_t*);
+void kmeansPP (int, uint32_t, uint64_t);

@@ -17,8 +17,10 @@ HEADERCUBE = $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE
 SOURCECUBE = src/cube.cpp $(CUBE_MODULES)handle-cube-input.cpp $(CUBE_MODULES)read-cube-file.cpp $(CUBE_MODULES)projection.cpp
 OBJCUBE = cube.o handle-cube-input.o projection.o read-cube-file.o $(COMMONOBJS)
 
-# add the rest of obj files here
-OBJCLUSTER = cluster.o 
+# $(KMEANSPP_MODULES)silhouette.cpp
+HEADERCLUSTER = $(LSH_HEADERS)common.hpp $(KMEANSPP_PATH)kmeansPP.hpp $(LSH_HEADERS)distances.hpp $(LSH_HEADERS)manhattan-hashing.hpp
+SOURCECLUSTER = $(KMEANSPP_MODULES)kmeansPP.cpp $(KMEANSPP_MODULES)read-cluster-input.cpp $(LSH_MODULES)manhattan-distance.cpp $(LSH_MODULES)manhattan-hashing.cpp
+OBJCLUSTER = cluster.o kmeansPP.o $(COMMONOBJS)
 
 CXX = g++
 FLAGS = -std=c++11 -O3 -g -c -Wall
@@ -33,8 +35,8 @@ lsh : $(OBJS)
 cube : $(OBJCUBE)
 	$(CXX) -g $(OBJCUBE) -o cube
 
-cluster : cluster.o
-	$(CXX) -g cluster.o -o cluster
+cluster : $(OBJCLUSTER)
+	$(CXX) -g $(OBJCLUSTER) -o cluster
 
 # Final object files
 lsh.o : $(SOURCE) $(HEADER)
@@ -43,11 +45,15 @@ lsh.o : $(SOURCE) $(HEADER)
 cube.o : $(SOURCECUBE) $(HEADERCUBE)
 	$(CXX) $(FLAGS) $(SOURCECUBE)
 
+cluster.o : $(SOURCECLUSTER) $(HEADERCLUSTER)
+	$(CXX) $(FLAGS) $(SOURCECLUSTER)
+
 # FOR CLUSTER
-# $(HEADER) $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp
-# $(HEADER) $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE_PATH)read-cube-file.hpp
-cluster.o : src/cluster.cpp $(LSH_HEADERS)common.hpp
-	$(CXX) $(FLAGS) src/cluster.cpp
+kmeansPP.o : $(KMEANSPP_MODULES)kmeansPP.cpp
+	$(CXX) $(FLAGS) $(KMEANSPP_MODULES)kmeansPP.cpp
+
+read-cluster-input.o : $(KMEANSPP_MODULES)read-cluster-input.cpp
+	$(CXX) $(FLAGS) $(KMEANSPP_MODULES)read-cluster-input.cpp
 
 # FOR LSH
 manhattan-distance.o : $(LSH_MODULES)manhattan-distance.cpp
