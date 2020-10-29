@@ -101,6 +101,7 @@ int main(int argc, char **argv) {
 
 	if (method == "CLASSIC") {
 		clusters = kmeansPP(K_medians, number_of_images, d);
+		silhouette(clusters, d);
 	}
 	// else if (method == "LSH") {
 	// 	strcpy(command, "cd - && ./lsh ");

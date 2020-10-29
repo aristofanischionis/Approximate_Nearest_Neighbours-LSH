@@ -1,9 +1,8 @@
 #include <stdint.h>
 #include <vector>
 // random value for now find the best
-// TODO
 #define SMALL_E 100 
-#define MAX_LOOPS 9
+#define MAX_LOOPS 50
 
 using namespace std;
 
@@ -20,3 +19,4 @@ extern int** cluster_images;
 
 void readClusterFile(const string&, uint32_t*, uint64_t*);
 vector<pair<int*, vector<int> > > kmeansPP(int, uint32_t, uint64_t);
+void silhouette(vector<pair<int *, vector<int>>>, u_int64_t);

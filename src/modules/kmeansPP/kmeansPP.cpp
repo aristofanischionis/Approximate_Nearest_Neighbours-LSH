@@ -45,7 +45,7 @@ int nextInitialCentroidCoords(uint32_t number_of_images) {
         total_distance += nearest_clusters[i].second;
     }
 
-	vector<double> v_i(number_of_images, 0);
+	vector<double> v_i(number_of_images, 0.0);
 	for (unsigned int i = 0; i < number_of_images ; i++) {
         v_i.insert(v_i.begin()+i, static_cast<double>(nearest_clusters[i].second) / static_cast<double>(total_distance));
     }
@@ -67,14 +67,14 @@ int nextInitialCentroidCoords(uint32_t number_of_images) {
 void getClosestCentroid(uint32_t index, vector<int*> centroids, uint64_t d) {
     int closest_cluster = -1;
     unsigned int min_distance = inf;
-    for (unsigned int c = 0; c < centroids.size() ; c++) {
+    for (unsigned int c = 0; c < centroids.size(); c++) {
         unsigned int distance = manhattanDistance(centroids[c], cluster_images[index], d);
         if (distance < min_distance) {
             min_distance = distance;
             closest_cluster = c;
         }
     }
-    if(closest_cluster == -1) {
+    if (closest_cluster == -1) {
         cerr << "Closest Cluster didn't update correctly" << endl;
         exit(ERROR);
     }
@@ -103,11 +103,11 @@ void updateCentroids(vector<int*> &centroids, uint32_t number_of_images, uint64_
     for (unsigned int i=0; i< new_centroids.size(); i++) {
         new_centroids[i] = new int [d];
     }
+
     for (unsigned int c = 0; c < centroids.size(); c++) {
         // for loop for every image in the cluster c
         // call function that returns a vector with all the images in a given cluster, by centroid index
         images_in_cluster = getImagesInCluster(c);
-        // temp_array.resize(images_in_cluster.size());
         // make a for loop for every dimension of the d
         for (uint64_t j = 0; j < d; j++) {
             temp_array.resize(images_in_cluster.size());
@@ -117,16 +117,13 @@ void updateCentroids(vector<int*> &centroids, uint32_t number_of_images, uint64_
             }
             // find median
             sort(temp_array.begin(), temp_array.end());
-            new_centroids[c][j] = temp_array[temp_array.size()/2];
+            new_centroids[c][j] = temp_array[temp_array.size() / 2];
             temp_array.clear();
         }
     }
     // we have new_centroids array ready, with updated values
     centroids = new_centroids;
-    // copy(centroids.begin(), centroids.end(), back_inserter(new_centroids));
-    // centroids.assign(new_centroids.begin(), new_centroids.end());
 
-    temp_array.clear();
     images_in_cluster.clear();
     new_centroids.clear();
 }
@@ -173,5 +170,6 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
         temp[nearest_clusters[i].first].push_back(i);
     for (int i = 0; i < K;i++)
         clusters[i] = make_pair(current_centroids[i], temp[i]);
+
     return clusters;
 }

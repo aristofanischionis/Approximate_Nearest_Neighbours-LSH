@@ -17,10 +17,9 @@ HEADERCUBE = $(CUBE_PATH)handle-cube-input.hpp $(CUBE_PATH)projection.hpp $(CUBE
 SOURCECUBE = src/cube.cpp $(CUBE_MODULES)handle-cube-input.cpp $(CUBE_MODULES)read-cube-file.cpp $(CUBE_MODULES)projection.cpp
 OBJCUBE = cube.o handle-cube-input.o projection.o read-cube-file.o $(COMMONOBJS)
 
-# $(KMEANSPP_MODULES)silhouette.cpp
 HEADERCLUSTER = $(LSH_HEADERS)common.hpp $(KMEANSPP_PATH)kmeansPP.hpp
-SOURCECLUSTER = src/cluster.cpp $(KMEANSPP_MODULES)kmeansPP.cpp $(KMEANSPP_MODULES)read-cluster-input.cpp
-OBJCLUSTER = cluster.o kmeansPP.o read-cluster-input.o $(COMMONOBJS)
+SOURCECLUSTER = src/cluster.cpp $(KMEANSPP_MODULES)kmeansPP.cpp $(KMEANSPP_MODULES)read-cluster-input.cpp $(KMEANSPP_MODULES)silhouette.cpp
+OBJCLUSTER = cluster.o kmeansPP.o read-cluster-input.o silhouette.o $(COMMONOBJS)
 
 CXX = g++
 FLAGS = -std=c++11 -O3 -g -c -Wall
@@ -54,6 +53,9 @@ kmeansPP.o : $(KMEANSPP_MODULES)kmeansPP.cpp
 
 read-cluster-input.o : $(KMEANSPP_MODULES)read-cluster-input.cpp
 	$(CXX) $(FLAGS) $(KMEANSPP_MODULES)read-cluster-input.cpp
+
+silhouette.o : $(KMEANSPP_MODULES)silhouette.cpp
+	$(CXX) $(FLAGS) $(KMEANSPP_MODULES)silhouette.cpp
 
 # FOR LSH
 manhattan-distance.o : $(LSH_MODULES)manhattan-distance.cpp

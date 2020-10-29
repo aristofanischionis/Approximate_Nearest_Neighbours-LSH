@@ -47,7 +47,8 @@ void silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
     // store the average s_i of each cluster c in one spot in this vector
     int final_s_i = 0;
     // s_i.resize(clusters.size());
-    
+    cout << "Silhouette's time" << endl;
+
     for (int c = 0; c < clusters.size(); c++) {
         // for each image in this centroid "c" calculate the s(i)
         tmp_s_i = 0;
