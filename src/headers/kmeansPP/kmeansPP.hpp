@@ -3,6 +3,7 @@
 // random value for now find the best
 #define SMALL_E 100 
 #define MAX_LOOPS 50
+#define HASHTABLE_NUMBER_K_MEANS 8
 
 using namespace std;
 

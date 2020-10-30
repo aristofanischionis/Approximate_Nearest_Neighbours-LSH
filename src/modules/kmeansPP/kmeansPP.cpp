@@ -3,6 +3,8 @@
 #include <algorithm>
 #include "../../headers/kmeansPP/kmeansPP.hpp"
 #include "../../headers/distances.hpp"
+#include "../../headers/modulo.hpp"
+#include "../../headers/manhattan-hashing.hpp"
 #include "../../headers/common.hpp"
 
 #include <vector>
@@ -15,6 +17,9 @@ vector<pair<int, unsigned int> > nearest_clusters;
 vector<int*> initial_centroids;
 vector<int*> current_centroids;
 vector<int*> previous_centroids;
+// Hashtables
+vector<vector<vector<pair<int, unsigned int> > > > HashTablesKmeans;
+
 
 int getRandomNumber(int number) {
 	random_device generator;
@@ -38,7 +43,7 @@ vector<int> getImagesInCluster(int centroid_idx) {
     return images_in_cluster;
 }
 
-int nextInitialCentroidCoords(uint32_t number_of_images) {
+int nextInitialCentroidIndex(uint32_t number_of_images) {
     // Adding the rest of the points according to the probability
 	unsigned int total_distance = 0;
     for (uint32_t i = 0; i < number_of_images; i++) {
@@ -154,7 +159,7 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
     // Initialize the K centroids
     for (int i = 1; i < K; i++) {
         updateNearClusters(initial_centroids, number_of_images, d);
-        initial_centroids.push_back(cluster_images[nextInitialCentroidCoords(number_of_images)]);
+        initial_centroids.push_back(cluster_images[nextInitialCentroidIndex(number_of_images)]);
     }
 
     current_centroids = initial_centroids;
@@ -173,3 +178,138 @@ vector<pair<int*, vector<int> > > kmeansPP(int K, uint32_t number_of_images, uin
 
     return clusters;
 }
+
+// -------------------------------------------------------BEGIN REVERSE ASSIGNMENT
+
+unsigned char* reConvertArray(int* array, uint64_t d) {
+    unsigned char* result = new unsigned char[d];
+    for (uint64_t i = 0; i < d; i++) {
+          result[i] = static_cast<unsigned char>(array[i]);
+      }
+    return result;
+}
+
+// Calculate g(x) using bitwise operations
+unsigned int calculateG_XforKmeans (int k, uint64_t d, uint32_t image) {
+	int h_x;
+	unsigned int g_x = 0;
+    // That is the max number of bits of the h(x)
+    int shift = 32/k;
+	for (int i=0; i<k; i++) {
+        // create h_x
+        h_x = calculateH_XComponent(d, reConvertArray(cluster_images[image], d));
+        if (i == 0)
+        {
+            g_x = h_x;
+        }
+        else {
+    		g_x <<= shift;
+        	g_x |= h_x;
+    	}
+    }
+    return g_x;
+}
+
+void insertToHashtableKmeans(int L, uint32_t image, unsigned int g_x, uint32_t n) {
+	int hashtable_size = n/HASHTABLE_NUMBER_K_MEANS;
+	unsigned long pos = customModulo(g_x, hashtable_size);
+	HashTablesKmeans[L][pos].push_back(make_pair(static_cast<unsigned int>(image), g_x));
+}
+
+void putImagesInHashtables(uint32_t number_of_images, int L, int k, uint64_t d) {
+    unsigned int g_x = 0;
+    for (uint32_t img = 0; img < number_of_images; img++){
+        for (int l = 0; l < L; l++) {
+            g_x = calculateG_XforKmeans(k, d, img);
+            // pass to hashtable
+            insertToHashtableKmeans(l, img, g_x, number_of_images);
+        }
+
+    }
+}
+
+// takes cluster images and assign them in clusters
+// when assigned push them in the assigned_images
+// if a point is in more than one centroids compare all distances and get the best
+// the ones in same buckets I add them in centroid's cluster
+// before assignment I have to make sure if other centroids are mapped in the same bucket 
+// to check distances between these centroids and my image
+void rangeSearchLSH(int centroidIndex, int radius) {
+
+}
+
+// the radius will be: min dist between two closest centers
+int calculateMinDistOfTwoCentroids (uint64_t d) {
+    int result = 0;
+    vector<unsigned int> distances;
+    for (unsigned int i = 0; i < current_centroids.size() - 1; i++) {
+        for (unsigned int j = i+1; j < current_centroids.size(); j++) {
+            // cout<<current_centroids[i]<<"  "<<current_centroids[j]<<endl;
+            distances.push_back(manhattanDistance(current_centroids[i], current_centroids[j], d));
+        }
+    }
+    sort(distances.begin(), distances.end());
+    result = (int)distances[0];
+    distances.clear();
+    return result;
+}
+
+// check the rate with which new points are push in the assigned_images
+int newPointsAssigned;
+bool fewNewPoints(vector<bool> assigned_images, int minRate) {
+    // count all values that are true
+    int allAssigned = count(assigned_images.begin(), assigned_images.end(), true);
+    newPointsAssigned = allAssigned - newPointsAssigned;
+    return (newPointsAssigned <= minRate);
+}
+
+/* `type` will be LSH or HyperCube
+    and depending on that 
+    I call:
+    * rangeSearchLSH
+    * rangeSearchHyperCube
+    in the loop
+*/
+
+void reverseAssignment(int type, uint32_t number_of_images, int L, int k, uint64_t d) {
+    // the centroids are NOT put in the hashtables, because they are like the queryfile in range search
+    // index cluster_images in L hashtables
+    // TODO
+    // this happens only once so it should be moved up in kmeansPP function
+    putImagesInHashtables(number_of_images, L, k, d);
+    // the assigned_images vector has number_of_images positions and in each position is the information 
+    // of having been assigned in a cluster or not
+    vector<bool> assigned_images(number_of_images, false);
+    // initialize the global variable with 0
+    newPointsAssigned = 0;
+    // if the new points assigned are less than 2 * the number of the centroids
+    // then we can skip the do while and range search and perform Lloyd's
+    // we can change this minrate to current_centroids.size()
+    // TODO: testing
+    int minRate = current_centroids.size() * 2;
+    // and multipy it by 2 until most balls get no new points
+    // TODO: maybe change these values
+    int radius = calculateMinDistOfTwoCentroids(d)/2;
+    // for example for radius = 3, max_radius = 96, so 6 loops (32 = 2^6)
+    // the loops we want is the power of 2 we are going to multiply the initial radius with
+    int MAX_RADIUS = 32*radius; 
+    // when I finish with the first radius value rerun with bigger values and assign unassigned spots only!
+    // the assignment will happen like above in the `nearest_clusters` vector.
+    do {
+        for (int c = 0; c < current_centroids.size(); c++) {
+            rangeSearchLSH(c, radius);
+        }
+        // check if new clusters don't get a lot of new points and break here
+        if(fewNewPoints(assigned_images, minRate)) break;
+        radius *= 2;
+    } while (radius < MAX_RADIUS);
+
+    // the ones left unassigned, calculate distances of all centroids and get the closest one
+
+}
+
+void rangeSearchHyperCube() {
+    
+}
+
+// -------------------------------------------------------END REVERSE ASSIGNMENT
