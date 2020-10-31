@@ -132,7 +132,6 @@ void rangeSearch(ofstream* file, uint64_t d, int k, int L, uint32_t q_num, unsig
     }
     // for all hash_tables
     for (int l = 0; l < L; l++) {
-        
         // loop over the bucket
         for (unsigned int h = 0; h < HashTables[l][pos_in_hash].size(); h++) {
             // calculate the Manhattan distance of q and every other image in the bucket

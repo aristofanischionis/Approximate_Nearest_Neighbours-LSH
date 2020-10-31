@@ -1,8 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include <cstring>
 #include <algorithm>
+#include <cmath>
 #include "headers/common.hpp"
 #include "headers/kmeansPP/kmeansPP.hpp"
 
@@ -96,29 +95,14 @@ int main(int argc, char **argv) {
 		cerr << "You have to give a value for K-medians" << endl;
 		exit(ERROR);
 	}
+	w=400;
+	// M as given from theory
+	M = pow(2, 32/(k_LSH));
+	m = M/2 - 1;
 	// Make it to upper
 	transform(method.begin(), method.end(),method.begin(), ::toupper);
-
-	if (method == "CLASSIC") {
-		clusters = kmeansPP(K_medians, number_of_images, d);
-		silhouette(clusters, d);
-	}
-	// else if (method == "LSH") {
-	// 	strcpy(command, "cd - && ./lsh ");
-	// 	strcat(command, "-d ");
-	// 	strcat(command, "-q ");
-	// 	strcat(command, "-k ");
-	// 	strcat(command, "-L ");
-	// 	strcat(command, "-o ");
-	// 	strcat(command, "-N ");
-	// 	strcat(command, "-R ");
-	// 	if (!system(command))
-	// 		cerr << "Something went wrong on system" <<endl;
-	// }
-	// else if (method == "HYPERCUBE") {
-	// 	if (!system("cd - && ./cube"))
-	// 		cerr << "Something went wrong on system" <<endl;
-	// }
+	clusters = kmeansPP(L, k_LSH, K_medians, number_of_images, d, method);
+	silhouette(clusters, d);
 
 	return SUCCESS;
 }

@@ -90,4 +90,4 @@ projection.o : $(CUBE_MODULES)projection.cpp
 	$(CXX) $(FLAGS) $(CUBE_MODULES)projection.cpp
 
 clean:
-	rm -f $(OBJS) $(OBJCUBE) $(OUT)
+	rm -f $(OBJS) $(OBJCUBE) $(OBJCLUSTER) $(OUT)

@@ -7,7 +7,7 @@ unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector
     unsigned int total_dist = 0;
     // for all images in this cluster
     // except yourself
-    for (int i = 0; i < clusters[c].second.size(); i++){
+    for (unsigned int i = 0; i < clusters[c].second.size(); i++){
         if (clusters[c].second[i] == image) {
             // it's myself so continue
             continue;
@@ -26,9 +26,11 @@ unsigned int averageDistanceOfImageInCluster(int image, vector<pair<int*, vector
 int findSecondClosestCentroid (int* centroidCoords, vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
     unsigned int min_distance = inf;
     int res_centroid = -1;
-    int dist = 0;
-    for (int c = 0; c < clusters.size(); c++) {
+    unsigned int dist = 0;
+    for (unsigned int c = 0; c < clusters.size(); c++) {
         dist = manhattanDistance(centroidCoords, clusters[c].first, d);
+        // if dist is 0 then we find the same centroid
+        if (dist == 0) continue;
         if(dist < min_distance) {
             min_distance = dist;
             res_centroid = c;
@@ -37,22 +39,22 @@ int findSecondClosestCentroid (int* centroidCoords, vector<pair<int*, vector<int
     return res_centroid;
 }
 
-int calculateS_I (unsigned int a_i, unsigned int b_i) {
-    return (b_i - a_i)/(a_i > b_i ? a_i : b_i);
+double calculateS_I (unsigned int a_i, unsigned int b_i) {
+    return ((double)b_i - (double)a_i)/((double)a_i > (double)b_i ? (double)a_i : (double)b_i);
 }
 
 void silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
     unsigned int a_i = 0, b_i = 0;
-    int tmp_s_i;
+    double tmp_s_i;
+    int counter = 0;
     // store the average s_i of each cluster c in one spot in this vector
-    int final_s_i = 0;
-    // s_i.resize(clusters.size());
+    double final_s_i = 0;
     cout << "Silhouette's time" << endl;
 
-    for (int c = 0; c < clusters.size(); c++) {
+    for (unsigned int c = 0; c < clusters.size(); c++) {
         // for each image in this centroid "c" calculate the s(i)
         tmp_s_i = 0;
-        for (int img = 0; img < clusters[c].second.size(); img++) {
+        for (unsigned int img = 0; img < clusters[c].second.size(); img++) {
             // calculate a_i component for this specific image
             a_i = averageDistanceOfImageInCluster(clusters[c].second[img], clusters, c, d);
             // calculate b_i component for this specific image
@@ -62,14 +64,18 @@ void silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
         }
         // calculate the average s(i) of all images in this cluster (centroid)
         // now in tmp_s_i I have the sum of all s_i for this cluster
-        tmp_s_i /= clusters[c].second.size();
-        final_s_i += tmp_s_i;
+        if (clusters[c].second.size() != 0) {
+            counter++;
+            tmp_s_i /= (double)clusters[c].second.size();
+            final_s_i += tmp_s_i;
+        }
     }
 
-    final_s_i /= clusters.size();
+    final_s_i /= (double)counter;
     // I got the final value for the s_i
-    // now evaluate if its -1, 0 or 1
-    switch (final_s_i) {
+    // now evaluate if it's -1, 0 or 1
+    cout<<counter<<"    "<<final_s_i<<endl;
+    switch ((int)final_s_i) {
         case -1: {
             cout << "Silhouette result was -1, K should be changed" << endl;
             break;

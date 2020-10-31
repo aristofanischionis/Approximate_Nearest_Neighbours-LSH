@@ -1,9 +1,12 @@
 #include <stdint.h>
 #include <vector>
+#include <string>
 // random value for now find the best
 #define SMALL_E 100 
 #define MAX_LOOPS 50
 #define HASHTABLE_NUMBER_K_MEANS 8
+#define CLUSTER_IMAGES 0
+#define CENTROIDS 1
 
 using namespace std;
 
@@ -19,5 +22,8 @@ extern vector<int*> previous_centroid;
 extern int** cluster_images;
 
 void readClusterFile(const string&, uint32_t*, uint64_t*);
-vector<pair<int*, vector<int> > > kmeansPP(int, uint32_t, uint64_t);
+vector<pair<int*, vector<int> > > kmeansPP(int, int, int, uint32_t, uint64_t, string);
 void silhouette(vector<pair<int *, vector<int>>>, u_int64_t);
+void reverseAssignment(string, uint32_t, int, int, uint64_t);
+void putImagesInHashtables(uint32_t, int, int, uint64_t);
+void initializeHashtablesKmeans(int, uint32_t);
