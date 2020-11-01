@@ -22,8 +22,12 @@ extern vector<int*> previous_centroid;
 extern int** cluster_images;
 
 void readClusterFile(const string&, uint32_t*, uint64_t*);
-vector<pair<int*, vector<int> > > kmeansPP(int, int, int, uint32_t, uint64_t, string);
-void silhouette(vector<pair<int *, vector<int>>>, u_int64_t);
-void reverseAssignment(string, uint32_t, int, int, uint64_t);
+vector<pair<int*, vector<int> > > kmeansPP(int, int, int, uint32_t, uint64_t, string, int, int);
+vector<double> silhouette(vector<pair<int *, vector<int>>>, u_int64_t);
+void reverseAssignment(string, uint32_t, int, int, uint64_t, int, int);
 void putImagesInHashtables(uint32_t, int, int, uint64_t);
 void initializeHashtablesKmeans(int, uint32_t);
+void putImagesInHypercubeKmeans(uint32_t, uint64_t);
+string calculateCubeG_XKmeans(int, int, int, int);
+void rangeSearchHyperCube(string, int, uint64_t, int, int, int, vector<bool>);
+

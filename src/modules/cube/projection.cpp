@@ -34,10 +34,8 @@ string decimalToBinary(int n) {
     //finding the binary form of the number and  
     //converting it to string.  
     string s = bitset<64> (n).to_string();
-
     // keep d' bits
     s.erase(s.begin(), s.end() - d_space);
-    
     return s;
 } 
 
@@ -78,7 +76,6 @@ void printF_X() {
 	}
 }
 
-// find pos, correct bucket to put my image
 void insertToHypercube(string g_x, int image) {
 	Hypercube.insert(make_pair(g_x, image));
 }

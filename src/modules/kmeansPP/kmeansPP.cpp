@@ -1,6 +1,8 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
+#include <unordered_map>
+#include <map>
 #include "../../headers/kmeansPP/kmeansPP.hpp"
 #include "../../headers/distances.hpp"
 #include "../../headers/modulo.hpp"
@@ -17,8 +19,11 @@ vector<pair<int, unsigned int> > nearest_clusters;
 vector<int*> initial_centroids;
 vector<int*> current_centroids;
 vector<int*> previous_centroids;
-// Hashtables
+// Hashtables for LSH
 vector<vector<vector<pair<int, unsigned int> > > > HashTablesKmeans;
+// Hypercube
+multimap <string, int> HypercubeKmeans;
+vector<unordered_map<int, int> > projections;
 
 
 int getRandomNumber(int number) {
@@ -142,11 +147,11 @@ bool equalCentroids(uint64_t d, int loops) {
     return (total_distance < SMALL_E);
 }
 
-vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t number_of_images, uint64_t d, string method) {
+vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t number_of_images, uint64_t d, string method, int points_M, int probes) {
     // this is a vector of all centroids
     // for each centroid store a vector of images assigned in this cluster
     vector<vector<int> > temp(K);
-    vector<pair<int*, vector<int> > > clusters(K);
+    vector<pair<int*, vector<int> > > clusters;
     int loops = 0;
     // Get a random centroid
     int* first_centroid = new int [d];
@@ -160,6 +165,9 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
         initializeHashtablesKmeans(L, number_of_images);
         putImagesInHashtables(number_of_images, L, k_LSH, d);
     }
+    else if (method == "HYPERCUBE") {
+        putImagesInHypercubeKmeans(number_of_images, d);
+    }
 
     // Initialize the K centroids
     for (int i = 1; i < K; i++) {
@@ -172,7 +180,7 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
     do {
         previous_centroids = current_centroids;
         if (method != "CLASSIC") {
-            reverseAssignment(method, number_of_images, L, k_LSH, d) ;
+            reverseAssignment(method, number_of_images, L, k_LSH, d, points_M, probes) ;
         }
         else {
             updateNearClusters(current_centroids, number_of_images, d);
@@ -185,8 +193,7 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
     for (uint32_t i = 0; i < number_of_images;i++)
         temp[nearest_clusters[i].first].push_back(i);
     for (int i = 0; i < K;i++)
-        clusters[i] = make_pair(current_centroids[i], temp[i]);
-
+        clusters.push_back(make_pair(current_centroids[i], temp[i]));
     return clusters;
 }
 
@@ -252,7 +259,7 @@ void putImagesInHashtables(uint32_t number_of_images, int L, int k, uint64_t d) 
 
 void rangeSearchLSH(int L, uint64_t d, int centroidIndex, int radius, vector<pair<int, unsigned int> > centroids_gx, vector<bool> assigned_images) {
     int pos_in_hash = centroids_gx[centroidIndex].first;
-    unsigned int current_centroid_gx = centroids_gx[centroidIndex].second;
+    // unsigned int current_centroid_gx = centroids_gx[centroidIndex].second;
     unsigned int current_distance = 0, current_gp = 0;
     int* centroids_coordinates = new int[d];
     centroids_coordinates = current_centroids[centroidIndex];
@@ -312,7 +319,7 @@ bool fewNewPoints(vector<bool> assigned_images, int minRate) {
     in the loop
 */
 
-void reverseAssignment(string type, uint32_t number_of_images, int L, int k, uint64_t d) {
+void reverseAssignment(string method, uint32_t number_of_images, int L, int k, uint64_t d, int points_M, int probes) {
     // the assigned_images vector has number_of_images positions and in each position is the information 
     // of having been assigned in a cluster or not
     vector<bool> assigned_images(number_of_images, false);
@@ -332,27 +339,45 @@ void reverseAssignment(string type, uint32_t number_of_images, int L, int k, uin
     // when we finish with the first radius value rerun with bigger values and assign unassigned spots only!
     // the assignment will happen like above in the `nearest_clusters` vector.
 
-    vector <pair<int, unsigned int> > centroids_gx;
+    // ---------------------------LSH
+    vector<pair<int, unsigned int> > centroids_gx;
     unsigned int current_gx = 0;
     int pos_in_hash = 0;
-    int hashtable_size = number_of_images/HASHTABLE_NUMBER_K_MEANS;
+    int hashtable_size = number_of_images / HASHTABLE_NUMBER_K_MEANS;
+    // ---------------------------Hypercube
+    vector<string> centroids_gx_Hypercube;
+    string current_gx_Hypercube;
+    int d_space = (int)(log2(d) - 1);
 
-    for (unsigned int c = 0; c < current_centroids.size(); c++) {
-        current_gx = calculateG_XforKmeans(k, d, c, CENTROIDS);
-        pos_in_hash = customModulo(current_gx, hashtable_size);
-
-        if (pos_in_hash > hashtable_size - 1) {
-            // then something went wrong with g(p)
-            cerr << "Calculating g(centroid) went wrong" << endl;
-            exit(ERROR);
+    // ---------------------------Init structures
+    if(method == "LSH") {
+        for (unsigned int c = 0; c < current_centroids.size(); c++) {
+            current_gx = calculateG_XforKmeans(k, d, c, CENTROIDS);
+            pos_in_hash = customModulo(current_gx, hashtable_size);
+            if (pos_in_hash > hashtable_size - 1) {
+                // then something went wrong with g(p)
+                cerr << "Calculating g(centroid) went wrong" << endl;
+                exit(ERROR);
+            }
+            centroids_gx.push_back(make_pair(pos_in_hash, current_gx));
         }
-        centroids_gx.push_back(make_pair(pos_in_hash, current_gx));
+    }
+    else if(method == "HYPERCUBE") {
+        for (unsigned int c = 0; c < current_centroids.size(); c++) {
+            current_gx_Hypercube = calculateCubeG_XKmeans(d, c, d_space, CENTROIDS);
+            centroids_gx_Hypercube.push_back(current_gx_Hypercube);
+        }
     }
 
-
+    // Reverse assignment with LSH or Hypercube
     do {
         for (unsigned int c = 0; c < current_centroids.size(); c++) {
-            rangeSearchLSH(L, d, c, radius, centroids_gx, assigned_images);
+            if(method == "LSH") {
+                rangeSearchLSH(L, d, c, radius, centroids_gx, assigned_images);
+            }
+            else if(method == "HYPERCUBE") {
+                rangeSearchHyperCube(centroids_gx_Hypercube[c], c, d, points_M, probes, radius, assigned_images);
+            }
         }
         // check if new clusters don't get a lot of new points and break here
         if(fewNewPoints(assigned_images, minRate)) break;
@@ -368,8 +393,168 @@ void reverseAssignment(string type, uint32_t number_of_images, int L, int k, uin
     centroids_gx.clear();
 }
 
-void rangeSearchHyperCube() {
-    
+
+// ---------------------------------------------------------Reverse Hypercube
+
+void insertToHypercubeKmeans(string g_x, int image) {
+	HypercubeKmeans.insert(make_pair(g_x, image));
+}
+
+string decimalToBinary(int n, int d_space) { 
+    //finding the binary form of the number and  
+    //converting it to string.  
+    string s = bitset<64> (n).to_string();
+    // keep d' bits
+    s.erase(s.begin(), s.end() - d_space);
+    return s;
+}
+
+int distribute_Bits() {
+	random_device generator;
+	uniform_int_distribution<int> distribution (0, 2);
+	// Generate a new int number
+	return distribution(generator);
+}
+
+string calculateCubeG_XKmeans(int d, int image, int d_space, int type) {
+	int h_x;
+	int bit;
+	int shift = 1;
+	int cubeG_X = 0;
+	for (int i=0; i<d_space; i++) {
+        switch(type) {
+            case CLUSTER_IMAGES :
+                h_x = calculateH_XComponent(d, reConvertArray(cluster_images[image], d));
+                break;
+            case CENTROIDS :
+                h_x = calculateH_XComponent(d, reConvertArray(current_centroids[image], d));
+                break;
+        }
+		// check if h_x exists in current f
+		if (projections[i].find(h_x) == projections[i].end()) {
+			bit = distribute_Bits();
+			// it does not exists, so add it
+			projections[i][h_x] = bit;
+		}
+		// now that we have f_i(h_i(p)) as a bit
+		// append it in bitstring
+		if (i == 0) {
+			// if bit is set
+			// then just shift
+			cubeG_X = projections[i][h_x];
+		}
+		else{
+			cubeG_X <<= shift;
+			cubeG_X |= projections[i][h_x];
+		}
+	}
+	return decimalToBinary(cubeG_X, d_space);
+}
+
+void putImagesInHypercubeKmeans(uint32_t number_of_images, uint64_t d) {
+    string cube_g_x;
+    int d_space = (int)(log2(d) - 1);
+    projections.resize(d_space);
+    for (int image = 0; image < number_of_images; image++) {
+        cube_g_x = calculateCubeG_XKmeans(d, image, d_space, CLUSTER_IMAGES);
+        // insert to hypercube
+        insertToHypercubeKmeans(cube_g_x, image);
+    }
+}
+
+// -------------------------------------
+
+int hammingDistance(string queryHash, string bucketHash) {
+	int i = 0, distance = 0;
+	while(queryHash[i] != '\0') {
+		if(queryHash[i] != bucketHash[i]) {
+			distance++;
+		}
+		i++;
+	}
+	return distance;
+}
+
+// function to all values of duplicate keys in a multimap
+vector<int> findImagesInBucket(string hash) {
+	vector<int> result;
+	auto search = HypercubeKmeans.equal_range(hash);
+	for (auto i = search.first ; i != search.second ; ++i) {
+		result.push_back(i->second);
+	}
+	return result;
+}
+
+// find strings that have hamming distance dist
+vector<string> findHashWithSpecificHammingDist(string queryHash, int dist, int maximumProbes) {
+	vector<string> res;
+	multimap <string, int> :: iterator itr;
+	int localProbes = maximumProbes;
+	for (itr = HypercubeKmeans.begin(); itr != HypercubeKmeans.end(); ++itr) {
+		if(hammingDistance(queryHash, itr->first) == dist) {
+			// if it doesn't exist in vector, push it back
+			if(find(res.begin(), res.end(), itr->first) == res.end()) {
+				res.push_back(itr->first);
+				localProbes--;
+			}
+			if(localProbes <= 0) break;
+		}
+	}
+	return res;
+}
+
+vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int probes) {
+	int currentHamming = 0;
+	int numberOfProbesToCheck = probes;
+	vector<string> currentNeighbourBuckets;
+	vector<int> currentPossibleNeighbours;
+	vector<int> allPossibleNeighbours;
+	int flag = 1;
+	do {
+		currentNeighbourBuckets = findHashWithSpecificHammingDist(queryHash, currentHamming, numberOfProbesToCheck);
+		for (unsigned int buck = 0; buck < currentNeighbourBuckets.size(); buck++) {
+			currentPossibleNeighbours = findImagesInBucket(currentNeighbourBuckets[buck]);
+			// checked some more
+			numberOfProbesToCheck--;
+			// now push back elements to allPossibleNeighbours
+			for (unsigned int el = 0; el < currentPossibleNeighbours.size(); el++) {
+				allPossibleNeighbours.push_back(currentPossibleNeighbours[el]);
+				if (allPossibleNeighbours.size() >= (unsigned int)maximumN)
+					flag = 0;
+			}
+			if (numberOfProbesToCheck <= 0)
+				flag = 0;
+			currentPossibleNeighbours.clear();
+		}
+		currentNeighbourBuckets.clear();
+		currentHamming++;
+	} while (flag);
+
+	return allPossibleNeighbours;
+}
+
+// --------------------------------------
+
+void rangeSearchHyperCube(string centroidHash, int centroidIndex, uint64_t d, int points_M, int probes, int radius, vector<bool> assigned_images) {
+    unsigned int current_distance = 0;
+	vector<int> allPossibleNeighbours;
+	allPossibleNeighbours = findAllNeighboursToBeChecked(centroidHash, points_M, probes);
+
+	for (unsigned int i=0; i < allPossibleNeighbours.size(); i++) {
+        current_distance = manhattanDistance(current_centroids[centroidIndex], cluster_images[allPossibleNeighbours[i]], d);
+        if (current_distance < radius) {
+            // int temp = HashTablesKmeans[l][pos_in_hash][h].first;
+            int temp = allPossibleNeighbours[i];
+            // first check the image is already assigned or the distance is closer to current centroid
+            if (!assigned_images[temp] || current_distance < nearest_clusters[temp].second) {
+                // assign image to the new cluster 
+                nearest_clusters[temp] = make_pair(centroidIndex, current_distance);
+                // flag image as assigned
+                assigned_images[temp] = true;
+            }
+        }
+	}
+	allPossibleNeighbours.clear();
 }
 
 // -------------------------------------------------------END REVERSE ASSIGNMENT
