@@ -43,12 +43,13 @@ double calculateS_I (unsigned int a_i, unsigned int b_i) {
     return ((double)b_i - (double)a_i)/((double)a_i > (double)b_i ? (double)a_i : (double)b_i);
 }
 
-void silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
+vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
     unsigned int a_i = 0, b_i = 0;
     double tmp_s_i;
     int counter = 0;
     // store the average s_i of each cluster c in one spot in this vector
     double final_s_i = 0;
+    vector<double> s_i;
     cout << "Silhouette's time" << endl;
 
     for (unsigned int c = 0; c < clusters.size(); c++) {
@@ -67,14 +68,15 @@ void silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
         if (clusters[c].second.size() != 0) {
             counter++;
             tmp_s_i /= (double)clusters[c].second.size();
+            s_i.push_back(tmp_s_i);
             final_s_i += tmp_s_i;
         }
     }
 
     final_s_i /= (double)counter;
+    s_i.push_back(final_s_i);
     // I got the final value for the s_i
     // now evaluate if it's -1, 0 or 1
-    cout<<counter<<"    "<<final_s_i<<endl;
     switch ((int)final_s_i) {
         case -1: {
             cout << "Silhouette result was -1, K should be changed" << endl;
@@ -93,4 +95,6 @@ void silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t d) {
             break;
         }
     }
+
+    return s_i;
 }

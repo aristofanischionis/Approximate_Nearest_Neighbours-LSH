@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include <map>
+#include <bitset>
 #include "../../headers/kmeansPP/kmeansPP.hpp"
 #include "../../headers/distances.hpp"
 #include "../../headers/modulo.hpp"
@@ -38,6 +39,12 @@ double getRealRandomNumber(double number) {
     return distribution(generator);
 }
 
+float getFloatRandomNumber(float number) {
+    random_device generator;
+    uniform_real_distribution<float> distribution (0.0, number);
+    return distribution(generator);
+}
+
 vector<int> getImagesInCluster(int centroid_idx) {
     vector<int> images_in_cluster;
     for (unsigned int i = 0; i < nearest_clusters.size(); i++) {
@@ -48,30 +55,41 @@ vector<int> getImagesInCluster(int centroid_idx) {
     return images_in_cluster;
 }
 
-int nextInitialCentroidIndex(uint32_t number_of_images) {
-    // Adding the rest of the points according to the probability
-	unsigned int total_distance = 0;
-    for (uint32_t i = 0; i < number_of_images; i++) {
-        total_distance += nearest_clusters[i].second;
+int nextInitialCentroidIndex(uint32_t number_of_images, uint64_t d) {
+    unsigned int min_dist, max_dist, current_distance = 0;
+    vector<float> partial_sums;
+    float d_i = 0.0;
+    float x = 0.0;
+    partial_sums.push_back(0.0);
+    for (uint32_t i = 1; i < number_of_images; i++) {
+        min_dist = inf;
+        max_dist = 0;
+        for (unsigned int centroid = 0; centroid < initial_centroids.size(); centroid++) {
+            if (cluster_images[i] == initial_centroids[centroid]) continue;
+            current_distance = manhattanDistance(initial_centroids[centroid], cluster_images[i], d);
+            if (current_distance < min_dist) {
+                min_dist = current_distance;
+            }
+            if (current_distance > max_dist) {
+                max_dist = current_distance;
+            }
+        }
+        d_i = (float)((float)min_dist/(float)max_dist);
+        d_i = pow(d_i, 2);
+        x += d_i;
+        partial_sums.push_back(x);
     }
-
-	vector<double> v_i(number_of_images, 0.0);
-	for (unsigned int i = 0; i < number_of_images ; i++) {
-        v_i.insert(v_i.begin()+i, static_cast<double>(nearest_clusters[i].second) / static_cast<double>(total_distance));
-    }
-	
-    // Adding
-	for (uint32_t i = 1; i < number_of_images ; i++) {
-        v_i.insert(v_i.begin()+i, v_i[i] + v_i[i-1]);
-    }
-
-    double rand_num = getRealRandomNumber(1.0);
-	for (uint32_t i = 0; i < number_of_images ; i++) {
-        if (rand_num < v_i[i]) {
-            return i;
+    // cout<<partial_sums.back()<<endl;
+    x = getFloatRandomNumber(partial_sums.back());
+    sort(partial_sums.begin(), partial_sums.end());
+    for (unsigned int r = 1; r < partial_sums.size(); r++) {
+        if (x > partial_sums[r]) {
+            // cout<<x<<"  "<<partial_sums[r]<<endl;
+            // partial_sums.clear();
+            return (int)r;
         }
     }
-    return number_of_images - 1;
+    return 0;
 }
 
 void getClosestCentroid(uint32_t index, vector<int*> centroids, uint64_t d) {
@@ -154,7 +172,7 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
     vector<pair<int*, vector<int> > > clusters;
     int loops = 0;
     // Get a random centroid
-    int* first_centroid = new int [d];
+    int* first_centroid;
     
     first_centroid = cluster_images[getRandomNumber(number_of_images)];
     initial_centroids.push_back(first_centroid);
@@ -172,7 +190,7 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
     // Initialize the K centroids
     for (int i = 1; i < K; i++) {
         updateNearClusters(initial_centroids, number_of_images, d);
-        initial_centroids.push_back(cluster_images[nextInitialCentroidIndex(number_of_images)]);
+        initial_centroids.push_back(cluster_images[nextInitialCentroidIndex(number_of_images, d)]);
     }
 
     current_centroids = initial_centroids;
@@ -259,8 +277,7 @@ void putImagesInHashtables(uint32_t number_of_images, int L, int k, uint64_t d) 
 
 void rangeSearchLSH(int L, uint64_t d, int centroidIndex, int radius, vector<pair<int, unsigned int> > centroids_gx, vector<bool> assigned_images) {
     int pos_in_hash = centroids_gx[centroidIndex].first;
-    // unsigned int current_centroid_gx = centroids_gx[centroidIndex].second;
-    unsigned int current_distance = 0, current_gp = 0;
+    unsigned int current_distance = 0;
     int* centroids_coordinates = new int[d];
     centroids_coordinates = current_centroids[centroidIndex];
 
@@ -270,7 +287,6 @@ void rangeSearchLSH(int L, uint64_t d, int centroidIndex, int radius, vector<pai
         for (unsigned int h = 0; h < HashTablesKmeans[l][pos_in_hash].size(); h++) {
             // calculate distance and g_p
             current_distance = manhattanDistance(centroids_coordinates, cluster_images[HashTablesKmeans[l][pos_in_hash][h].first], d);
-            current_gp = HashTablesKmeans[l][pos_in_hash][h].second;
             if (current_distance < (unsigned int)radius) {
                 unsigned int temp = HashTablesKmeans[l][pos_in_hash][h].first;
                 // first check the image is already assigned or the distance is closer to current centroid
@@ -455,7 +471,7 @@ void putImagesInHypercubeKmeans(uint32_t number_of_images, uint64_t d) {
     string cube_g_x;
     int d_space = (int)(log2(d) - 1);
     projections.resize(d_space);
-    for (int image = 0; image < number_of_images; image++) {
+    for (uint32_t image = 0; image < number_of_images; image++) {
         cube_g_x = calculateCubeG_XKmeans(d, image, d_space, CLUSTER_IMAGES);
         // insert to hypercube
         insertToHypercubeKmeans(cube_g_x, image);
@@ -542,8 +558,7 @@ void rangeSearchHyperCube(string centroidHash, int centroidIndex, uint64_t d, in
 
 	for (unsigned int i=0; i < allPossibleNeighbours.size(); i++) {
         current_distance = manhattanDistance(current_centroids[centroidIndex], cluster_images[allPossibleNeighbours[i]], d);
-        if (current_distance < radius) {
-            // int temp = HashTablesKmeans[l][pos_in_hash][h].first;
+        if (current_distance < (unsigned int)radius) {
             int temp = allPossibleNeighbours[i];
             // first check the image is already assigned or the distance is closer to current centroid
             if (!assigned_images[temp] || current_distance < nearest_clusters[temp].second) {
