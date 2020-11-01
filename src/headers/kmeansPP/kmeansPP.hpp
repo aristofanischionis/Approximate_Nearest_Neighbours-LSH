@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 // random value for now find the best
-#define SMALL_E 100 
+#define SMALL_E 5 
 #define MAX_LOOPS 50
 #define HASHTABLE_NUMBER_K_MEANS 8
 #define CLUSTER_IMAGES 0
@@ -29,5 +29,5 @@ void putImagesInHashtables(uint32_t, int, int, uint64_t);
 void initializeHashtablesKmeans(int, uint32_t);
 void putImagesInHypercubeKmeans(uint32_t, uint64_t);
 string calculateCubeG_XKmeans(int, int, int, int);
-void rangeSearchHyperCube(string, int, uint64_t, int, int, int, vector<bool>);
+void rangeSearchHyperCube(string, int, uint64_t, int, int, int, vector<bool>&);
 

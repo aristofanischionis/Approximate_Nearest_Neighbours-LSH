@@ -10,7 +10,6 @@
 #include "../../headers/manhattan-hashing.hpp"
 #include "../../headers/common.hpp"
 
-#include <vector>
 using namespace std;
 
 // Store the closest centroid index and distance for every image
@@ -55,17 +54,26 @@ vector<int> getImagesInCluster(int centroid_idx) {
     return images_in_cluster;
 }
 
+bool isSameCoords(int* arr1, int* arr2, uint64_t d) {
+    for (uint64_t i = 0; i < d; i++) {
+        if(arr1[i] != arr2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int nextInitialCentroidIndex(uint32_t number_of_images, uint64_t d) {
     unsigned int min_dist, max_dist, current_distance = 0;
     vector<float> partial_sums;
     float d_i = 0.0;
     float x = 0.0;
     partial_sums.push_back(0.0);
-    for (uint32_t i = 1; i < number_of_images; i++) {
+    for (uint32_t i = 0; i < number_of_images; i++) {
         min_dist = inf;
         max_dist = 0;
         for (unsigned int centroid = 0; centroid < initial_centroids.size(); centroid++) {
-            if (cluster_images[i] == initial_centroids[centroid]) continue;
+            if (isSameCoords(cluster_images[i], initial_centroids[centroid], d)) continue;
             current_distance = manhattanDistance(initial_centroids[centroid], cluster_images[i], d);
             if (current_distance < min_dist) {
                 min_dist = current_distance;
@@ -74,22 +82,18 @@ int nextInitialCentroidIndex(uint32_t number_of_images, uint64_t d) {
                 max_dist = current_distance;
             }
         }
+        if (min_dist == inf) continue;
         d_i = (float)((float)min_dist/(float)max_dist);
         d_i = pow(d_i, 2);
-        x += d_i;
-        partial_sums.push_back(x);
+        partial_sums.push_back(d_i + partial_sums.back());
     }
-    // cout<<partial_sums.back()<<endl;
     x = getFloatRandomNumber(partial_sums.back());
-    sort(partial_sums.begin(), partial_sums.end());
-    for (unsigned int r = 1; r < partial_sums.size(); r++) {
-        if (x > partial_sums[r]) {
-            // cout<<x<<"  "<<partial_sums[r]<<endl;
-            // partial_sums.clear();
-            return (int)r;
+    for (unsigned int r = 1; r < partial_sums.size() - 1; r++) {
+        if (x > partial_sums[r] && x <= partial_sums[r+1]) {
+            return (int)(r+1);
         }
     }
-    return 0;
+    return partial_sums.back();
 }
 
 void getClosestCentroid(uint32_t index, vector<int*> centroids, uint64_t d) {
@@ -151,9 +155,7 @@ void updateCentroids(vector<int*> &centroids, uint32_t number_of_images, uint64_
     }
     // we have new_centroids array ready, with updated values
     centroids = new_centroids;
-
     images_in_cluster.clear();
-    new_centroids.clear();
 }
 
 bool equalCentroids(uint64_t d, int loops) {
@@ -178,7 +180,6 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
     initial_centroids.push_back(first_centroid);
     // it will have one position for each image
     nearest_clusters.resize(number_of_images);
-
     if (method == "LSH") {
         initializeHashtablesKmeans(L, number_of_images);
         putImagesInHashtables(number_of_images, L, k_LSH, d);
@@ -210,7 +211,7 @@ vector<pair<int*, vector<int> > > kmeansPP(int L, int k_LSH, int K, uint32_t num
     // finally make the data for silhouette
     for (uint32_t i = 0; i < number_of_images;i++)
         temp[nearest_clusters[i].first].push_back(i);
-    for (int i = 0; i < K;i++)
+    for (unsigned int i = 0; i < current_centroids.size(); i++)
         clusters.push_back(make_pair(current_centroids[i], temp[i]));
     return clusters;
 }
@@ -275,7 +276,7 @@ void putImagesInHashtables(uint32_t number_of_images, int L, int k, uint64_t d) 
     }
 }
 
-void rangeSearchLSH(int L, uint64_t d, int centroidIndex, int radius, vector<pair<int, unsigned int> > centroids_gx, vector<bool> assigned_images) {
+void rangeSearchLSH(int L, uint64_t d, int centroidIndex, int radius, vector<pair<int, unsigned int> > centroids_gx, vector<bool> &assigned_images) {
     int pos_in_hash = centroids_gx[centroidIndex].first;
     unsigned int current_distance = 0;
     int* centroids_coordinates = new int[d];
@@ -351,7 +352,7 @@ void reverseAssignment(string method, uint32_t number_of_images, int L, int k, u
     int radius = calculateMinDistOfTwoCentroids(d)/2;
     // for example for radius = 3, max_radius = 96, so 6 loops (64 = 2^7)
     // the loops we want is the power of 2 we are going to multiply the initial radius with
-    int MAX_RADIUS = 64*radius; 
+    int MAX_RADIUS = 16*radius; 
     // when we finish with the first radius value rerun with bigger values and assign unassigned spots only!
     // the assignment will happen like above in the `nearest_clusters` vector.
 
@@ -551,7 +552,7 @@ vector<int> findAllNeighboursToBeChecked(string queryHash, int maximumN, int pro
 
 // --------------------------------------
 
-void rangeSearchHyperCube(string centroidHash, int centroidIndex, uint64_t d, int points_M, int probes, int radius, vector<bool> assigned_images) {
+void rangeSearchHyperCube(string centroidHash, int centroidIndex, uint64_t d, int points_M, int probes, int radius, vector<bool> &assigned_images) {
     unsigned int current_distance = 0;
 	vector<int> allPossibleNeighbours;
 	allPossibleNeighbours = findAllNeighboursToBeChecked(centroidHash, points_M, probes);

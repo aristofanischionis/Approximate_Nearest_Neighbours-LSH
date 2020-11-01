@@ -50,7 +50,6 @@ vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t 
     // store the average s_i of each cluster c in one spot in this vector
     double final_s_i = 0;
     vector<double> s_i;
-    cout << "Silhouette's time" << endl;
 
     for (unsigned int c = 0; c < clusters.size(); c++) {
         // for each image in this centroid "c" calculate the s(i)
@@ -75,26 +74,6 @@ vector<double> silhouette(vector<pair<int*, vector<int> > > clusters, u_int64_t 
 
     final_s_i /= (double)counter;
     s_i.push_back(final_s_i);
-    // I got the final value for the s_i
-    // now evaluate if it's -1, 0 or 1
-    switch ((int)final_s_i) {
-        case -1: {
-            cout << "Silhouette result was -1, K should be changed" << endl;
-            break;
-        }
-        case 0: {
-            cout << "Silhouette result was 0, could be better" << endl;
-            break;
-        }
-        case 1: {
-            cout << "Silhouette result was 1, everything good" << endl;
-            break;
-        }
-        default: {
-            cout << "Silhouette result was " << final_s_i << " , something is going wrong" << endl;
-            break;
-        }
-    }
 
     return s_i;
 }

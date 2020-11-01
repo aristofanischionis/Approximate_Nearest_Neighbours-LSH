@@ -131,6 +131,7 @@ int main(int argc, char **argv) {
     else
     	o_file << "Algorithm: " << "Range Search "  << method << endl;
     for (unsigned int i=0; i < clusters.size(); i++) {
+    	if (clusters[i].second.size() == 0 || clusters[i].first == NULL) continue;
 	    if (complete_flag) {
 	    	o_file << "CLUSTER-" << i+1 << " { centroid: [";
 	    	for (uint64_t j=0; j < d - 1; j++) {

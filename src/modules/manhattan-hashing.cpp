@@ -17,24 +17,6 @@ int* convertArray(unsigned char* array, int size) {
 }
 
 void calculateW_Component(uint64_t d, uint32_t number_of_images, uint32_t number_of_query_images) {
-	// int* qarray, *parray;
-	// vector <unsigned int> distances;
-	// // pick a ramdom query image
-	// int randNum = rand()%number_of_query_images;
-	// qarray = convertArray(query_images[randNum], d);
-	// for (uint32_t image=0; image<number_of_images; image++){
-	// 	// convert array do it with vector 
- //    	parray = convertArray(all_images[image], d);
- //    	distances.push_back(manhattanDistance(qarray, parray, d));
- //    	delete[] parray;
-	// }
- //    delete[] qarray;
-
- //    auto sum = std::accumulate(distances.begin(), distances.end(), 0.0);
-	// auto mean = sum / distances.size();
-	// w = mean*5;
-	// distances.clear();
-
 	int* qarray, *parray;
 	auto sum = 0;
 	for (uint32_t q=0; q<50; q++){
