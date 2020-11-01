@@ -29,7 +29,6 @@ void handleReExecution (
 	string input;
 	char split_char = ' ';
 	getline(cin, input);
-	// TODO: FREE UP MEMORY
 	if (input.size() == 0)
 		exit(SUCCESS);
 	// Here the least amount of arguments are 6

@@ -45,9 +45,7 @@ int main(int argc, char **argv) {
         }
     } while (true);
     o_file.close();
-    // DON'T FORGET TO FREE UP ALL USED SPACE
     // free up space for all_images
-    // !!make function!!
     for (uint32_t i = 0; i < number_of_images;i++) {
         delete[] all_cube_images[i];
     }
@@ -57,6 +55,4 @@ int main(int argc, char **argv) {
     }
     delete[] query_cube_images;
     return SUCCESS;
-
-    // TODO: FREE UP MEMORY
 }

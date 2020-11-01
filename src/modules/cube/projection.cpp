@@ -34,10 +34,8 @@ string decimalToBinary(int n) {
     //finding the binary form of the number and  
     //converting it to string.  
     string s = bitset<64> (n).to_string();
-
     // keep d' bits
     s.erase(s.begin(), s.end() - d_space);
-    
     return s;
 } 
 
@@ -78,7 +76,6 @@ void printF_X() {
 	}
 }
 
-// find pos, correct bucket to put my image
 void insertToHypercube(string g_x, int image) {
 	Hypercube.insert(make_pair(g_x, image));
 }
@@ -198,10 +195,10 @@ void hypercubeANN(ofstream* file, int q_num, int n, int d, int number_of_images)
 	vector<pair<unsigned int, unsigned int> > BNN;
 
     // get the time for brute force
-    // auto startTrue = chrono::high_resolution_clock::now();
-    // BNN = hypercube_Full_Search(d, n, q_num, number_of_images);
-    // auto finishTrue = chrono::high_resolution_clock::now();
-    // std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
+    auto startTrue = chrono::high_resolution_clock::now();
+    BNN = hypercube_Full_Search(d, n, q_num, number_of_images);
+    auto finishTrue = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
 
 	// get the time for Hypercube
     auto startHypercube = chrono::high_resolution_clock::now();
@@ -217,7 +214,7 @@ void hypercubeANN(ofstream* file, int q_num, int n, int d, int number_of_images)
         if (current_distance < min_distance) {
 	        (*file) << "Nearest neighbour-" << counter+1 << ": " << allPossibleNeighbours[i] << endl;
 	        (*file) << "distanceHypercube: " << current_distance << endl;
-	        // (*file) << "distanceTrue: " << BNN[counter].second << endl;
+	        (*file) << "distanceTrue: " << BNN[counter].second << endl;
 
 		    min_distance = current_distance;
         	maximumN--;
@@ -233,7 +230,7 @@ void hypercubeANN(ofstream* file, int q_num, int n, int d, int number_of_images)
 
 
 	(*file) << "tHypercube: " << elapsedHypercube.count() << endl;
-	// (*file) << "tTrue: " << elapsedTrue.count() << endl;
+	(*file) << "tTrue: " << elapsedTrue.count() << endl;
 
 	BNN.clear();
 	allPossibleNeighbours.clear();
