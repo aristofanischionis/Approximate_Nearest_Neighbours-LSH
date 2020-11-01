@@ -330,7 +330,7 @@ bool fewNewPoints(vector<bool> assigned_images, int minRate) {
 
 /* `type` will be LSH or HyperCube
     and depending on that 
-    I call:
+    We call:
     * rangeSearchLSH
     * rangeSearchHyperCube
     in the loop
@@ -345,12 +345,10 @@ void reverseAssignment(string method, uint32_t number_of_images, int L, int k, u
     // if the new points assigned are less than 2 * the number of the centroids
     // then we can skip the do while and range search and perform Lloyd's
     // we can change this minrate to current_centroids.size()
-    // TODO: testing
     int minRate = current_centroids.size()*2;
     // and multipy it by 2 until most balls get no new points
-    // TODO: maybe change these values
     int radius = calculateMinDistOfTwoCentroids(d)/2;
-    // for example for radius = 3, max_radius = 96, so 6 loops (64 = 2^7)
+    // for example for radius = 3, max_radius = 96, so 4 loops (16 = 2^4)
     // the loops we want is the power of 2 we are going to multiply the initial radius with
     int MAX_RADIUS = 16*radius; 
     // when we finish with the first radius value rerun with bigger values and assign unassigned spots only!

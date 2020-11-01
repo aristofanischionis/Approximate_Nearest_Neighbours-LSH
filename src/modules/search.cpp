@@ -93,20 +93,20 @@ void approximateN_NNs (ofstream* file, uint64_t d, int k, int n, int L, uint32_t
     if (n_neighbours.size() > static_cast<unsigned int>(n)) n_neighbours.resize(n);
     // write in output file
 
-    // auto startTrue = chrono::high_resolution_clock::now();
-    // BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images);
-    // auto finishTrue = chrono::high_resolution_clock::now();
-    // std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
+    auto startTrue = chrono::high_resolution_clock::now();
+    BNN = approximateN_NNs_Full_Search(d, n, q_num, number_of_images);
+    auto finishTrue = chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsedTrue = finishTrue - startTrue;
 
     (*file) << "Query: " << q_num << endl;
     for (unsigned int i = 0; i < n_neighbours.size(); i++) {
         (*file) << "Nearest neighbour-" << i+1 << ": " << n_neighbours[i].first << endl;
         (*file) << "distanceLSH: " << n_neighbours[i].second << endl;
-        // (*file) << "distanceTrue: " << BNN[i].second << endl;
+        (*file) << "distanceTrue: " << BNN[i].second << endl;
     }
     (*file) << "tLSH: " << elapsedLSH.count() << endl;
-    // (*file) << "tTrue: " << elapsedTrue.count() << endl;
-    // BNN.clear();
+    (*file) << "tTrue: " << elapsedTrue.count() << endl;
+    BNN.clear();
     n_neighbours.clear();
 }
 
